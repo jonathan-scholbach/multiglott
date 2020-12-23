@@ -1,27 +1,36 @@
 <template>
   <div id="app">
-    <HelloWorld/>
+    <div class="page">
+      <div class="header">
+        <HeaderNav/>
+      </div>
+      <div id="page-content">
+        <component v-bind:is="page"></component>
+      </div> 
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HeaderNav from "./components/HeaderNav.vue"
+import WelcomePage from "./components/WelcomePage.vue"
+import LoginPage from "./components/LoginPage.vue"
 
 export default {
-  name: 'App',
+  name: "App",
+  data: function() {
+    return {
+      page: "WelcomePage"
+    }
+  },
   components: {
-    HelloWorld
+    HeaderNav,
+    WelcomePage,
+    LoginPage
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import "/assets/styles/style.sass";
 </style>
