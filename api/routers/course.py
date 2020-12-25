@@ -5,6 +5,7 @@ course_router = APIRouter(
     prefix="/courses",
 )
 
+
 @course_router.get("/")
 def index_courses():
     return {"Hello": "World"}
