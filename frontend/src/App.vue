@@ -4,33 +4,53 @@
       <div class="header">
         <HeaderNav/>
       </div>
-      <div id="page-content">
+
+      <div class="page-content">
         <component v-bind:is="page"></component>
       </div> 
     </div>
+  <router-view></router-view>
   </div>
 </template>
 
 <script>
+import VueRouter from "vue-router"
+
 import HeaderNav from "./components/HeaderNav.vue"
 import WelcomePage from "./components/WelcomePage.vue"
 import LoginPage from "./components/LoginPage.vue"
+import RegisterPage from "./components/RegisterPage.vue"
+
+const routes = [
+  { path: "/", component: WelcomePage },
+  { path: "/login", component: LoginPage },
+  { path: "/register", component: RegisterPage },
+]
+
+const router = new VueRouter({
+  routes: routes
+})
 
 export default {
   name: "App",
   data: function() {
     return {
-      page: "WelcomePage"
+      page: ""
     }
   },
   components: {
     HeaderNav,
     WelcomePage,
-    LoginPage
-  }
+    LoginPage,
+    RegisterPage
+  },
+  router: router
 }
 </script>
 
 <style>
-  @import "/assets/styles/style.sass";
+  @import "/bootstrap/dist/css/bootstrap.min.css";
+  @import "/bootstrap/dist/js/bootstrap.min.js";
+  @import "/jquery/src/jquery.js";
+  @import "/assets/styles/style.scss";
 </style>

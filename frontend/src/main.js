@@ -1,9 +1,15 @@
 import Vue from "vue"
+import VueRouter from 'vue-router'
 import App from "./App.vue"
 
-require("@/assets/styles/style.sass")
+import "bootstrap"
+import "bootstrap/dist/css/bootstrap.min.css"
+
+require("@/assets/styles/style.scss")
+
 
 Vue.config.productionTip = false
+Vue.use(VueRouter)
 
 new Vue({
   render: h => h(App),
