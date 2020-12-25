@@ -9,6 +9,7 @@ require("@/assets/styles/style.scss")
 
 
 Vue.config.productionTip = false
+
 Vue.use(VueRouter)
 
 new Vue({

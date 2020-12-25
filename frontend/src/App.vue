@@ -5,11 +5,11 @@
         <HeaderNav/>
       </div>
 
-      <div class="page-content">
-        <component v-bind:is="page"></component>
-      </div> 
+     <div class="page-content">
+        <component v-bind:is="currentPage"></component>
+      </div>
+ 
     </div>
-  <router-view></router-view>
   </div>
 </template>
 
@@ -33,16 +33,20 @@ const router = new VueRouter({
 
 export default {
   name: "App",
-  data: function() {
-    return {
-      page: ""
+  computed: {
+    "currentPage": function() {
+      switch(this.$route.fullPath) {
+        case "/login":
+          return LoginPage
+        case "/register":
+          return RegisterPage
+        default:
+          return WelcomePage
+      }
     }
   },
   components: {
-    HeaderNav,
-    WelcomePage,
-    LoginPage,
-    RegisterPage
+    HeaderNav
   },
   router: router
 }

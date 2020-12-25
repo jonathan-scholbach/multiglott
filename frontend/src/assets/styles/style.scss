@@ -1,5 +1,10 @@
+$base-size: 20px;
+
 .page {
     max-width: 800px !important;
     margin: auto;
 }
 
+.page-content{
+    margin-top: 2*$base-size;
+}
