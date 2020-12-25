@@ -9,6 +9,6 @@ ENV PATH /frontend/node_modules/.bin:$PATH
 # install and cache app dependencies
 COPY package.json /frontend/package.json
 RUN npm install
-RUN npm install @vue/cli -g
+COPY . .
 
 RUN npm run build
