@@ -78,8 +78,7 @@
                         },
                         {
                             headers: {
-                                "accept": "application/json",
-                                "Content-Type": "application/json ",
+                                "Content-Type": "plain/text ",
                             }
                         }
                     ).then((response) => {

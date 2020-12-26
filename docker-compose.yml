@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
+      SECRET_KEY: ${SECRET_KEY}
+      SECURITY_PASSWORD_SALT: ${SECURITY_PASSWORD_SALT}
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - ./api:/api

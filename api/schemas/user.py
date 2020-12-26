@@ -12,6 +12,9 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: int
     created_at: datetime
-
+    confirmation_token: str
+    confirmed: bool
+    salt: str
+    
     class Config:
         orm_mode = True

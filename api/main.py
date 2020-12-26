@@ -7,16 +7,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from database import Base
+from config import config
 
-
-POSTGRES_USER = os.environ["POSTGRES_USER"]
-POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
-POSTGRES_DB = os.environ["POSTGRES_DB"]
-POSTGRES_PORT = os.environ["POSTGRES_PORT"]
-POSTGRES_HOST = os.environ["POSTGRES_HOST"]
 
 SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    f"postgresql://{config['POSTGRES_USER']}:{config['POSTGRES_PASSWORD']}"
+    f"@{config['POSTGRES_HOST']}:{config['POSTGRES_PORT']}/{config['POSTGRES_DB']}"
 )
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -37,12 +33,11 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:80",
-        "http://localhost",
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
-    allow_headers=["application/json"]
+    allow_headers=["*"],
 )
 app.include_router(v1_router)
 
@@ -50,6 +45,7 @@ app.include_router(v1_router)
 @app.get("/")
 async def root():
     return {"Hello, ": "World!"}
+
 
 from models import User, Course
 
