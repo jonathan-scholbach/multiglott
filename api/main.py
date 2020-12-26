@@ -36,10 +36,13 @@ from routers import v1_router
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:80",
+        "http://localhost",
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
-    allow_headers=["*"]
+    allow_headers=["application/json"]
 )
 app.include_router(v1_router)
 

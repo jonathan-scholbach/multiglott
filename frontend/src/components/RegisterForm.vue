@@ -78,7 +78,8 @@
                         },
                         {
                             headers: {
-                                "Content-Type": "text/plain;charset=utf-8",
+                                "accept": "application/json",
+                                "Content-Type": "application/json ",
                             }
                         }
                     ).then((response) => {
