@@ -7,6 +7,11 @@ config = {
     "POSTGRES_DB": os.environ["POSTGRES_DB"],
     "POSTGRES_PORT": os.environ["POSTGRES_PORT"],
     "POSTGRES_HOST": os.environ["POSTGRES_HOST"],
-    "SECRET_KEY": os.environ["SECRET_KEY"],
-    "SECURITY_PASSWORD_SALT": os.environ["SECURITY_PASSWORD_SALT"],
+    "API_SECRET_KEY": os.environ["API_SECRET_KEY"],
+    "API_SECURITY_PASSWORD_SALT": os.environ["API_SECURITY_PASSWORD_SALT"],
+    "API_DOMAIN": os.environ["API_DOMAIN"],
+    "API_PORT": os.environ["API_PORT"],
+    "API_URL": f"{os.environ['API_DOMAIN']}:{os.environ['API_PORT']}",
+    "API_VERSION": "v1",
+    "SMTP_PASSWORD": os.environ["SMTP_PASSWORD"],
 }

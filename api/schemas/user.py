@@ -8,17 +8,17 @@ class UserBase(BaseModel):
     email: str
 
 
-class UserWithPassword(UserBase):
-    password: str
-
-
 class User(UserBase):
     id: int
-    auth_token: str
 
     class Config:
         orm_mode = True
 
+class UserWithPassword(UserBase):
+    password: str
+
+class UserWithAuthToken(User):
+    auth_token: str
 
 class AuthToken(BaseModel):
     token: str

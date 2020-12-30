@@ -9,13 +9,16 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
-      SECRET_KEY: ${SECRET_KEY}
-      SECURITY_PASSWORD_SALT: ${SECURITY_PASSWORD_SALT}
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      API_SECRET_KEY: ${API_SECRET_KEY}
+      API_SECURITY_PASSWORD_SALT: ${API_SECURITY_PASSWORD_SALT}
+      API_DOMAIN: ${API_DOMAIN}
+      API_PORT: ${API_PORT}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+    command: uvicorn main:app --host 0.0.0.0 --port ${API_PORT} --reload
     volumes:
       - ./api:/api
     ports:
-      - "8000:8000"
+      - "${API_PORT}:${API_PORT}"
     depends_on:
         - db
   
@@ -30,7 +33,7 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
     expose: 
       - $POSTGRES_PORT
-    command: -p $POSTGRES_PORT
+    command: -p ${POSTGRES_PORT}
     ports:
       - $POSTGRES_PORT
 
@@ -41,5 +44,5 @@ services:
       - ./frontend:/frontend
       - '/frontend/node_modules'
     ports:
-      - "80:80"
-    command: npm run serve -- --port 80
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    command: npm run serve -- --port ${FRONTEND_PORT}

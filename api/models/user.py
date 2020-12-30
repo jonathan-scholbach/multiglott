@@ -15,7 +15,7 @@ from config import config
 from schemas.user import UserBase
 from .db_base_model import DBBaseModel
 from database import Base
-
+from mail import send_mail
 
 class User(DBBaseModel, Base):
     __tablename__ = "users"
@@ -32,23 +32,28 @@ class User(DBBaseModel, Base):
 
     @classmethod
     def create(cls, db: Session, user: UserBase) -> "User":
-        hashed_password = User.hash_password(plaintext_password=user.password)
         if User.get(db=db, value=user.name, key="name"):
             raise HTTPException(
                 status_code=422,
-                detail=f"The name {user.name} is already in use. Please pick a different user name.",
+                detail=(
+                    f"The name {user.name} is already in use. ",
+                    f"Please pick a different user name.",
+                )
             )
 
         if User.get(db=db, value=user.email, key="email"):
             raise HTTPException(
                 status_code=422,
-                detail=f"There is already an account linked to the email {user.email}.",
+                detail=(
+                    f"There is already an account linked to the email ",
+                    f"{user.email}."
+                )
             )
 
         db_user = cls(
             email=user.email,
             name=user.name,
-            password_hash=hashed_password,
+            password_hash=User.hash_password(plaintext_password=user.password),
             created_at=datetime.now(),
             confirmation_token=User.create_confirmation_token(user.email),
         )
@@ -60,19 +65,20 @@ class User(DBBaseModel, Base):
 
     @staticmethod
     def create_confirmation_token(email: str) -> str:
-        serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+        serializer = URLSafeTimedSerializer(config["API_SECRET_KEY"])
 
-        return serializer.dumps(email, salt=config["SECURITY_PASSWORD_SALT"])
+        return serializer.dumps(email, salt=config["API_SECURITY_PASSWORD_SALT"])
 
     @staticmethod
-    def confirm_token(token: str, expiration: int = 3600):
-        serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+    def confirmation_token(token: str, expiration: int = 3600):
+        serializer = URLSafeTimedSerializer(config["API_SECRET_KEY"])
         try:
             email = serializer.loads(
-                token, salt=config["SECURITY_PASSWORD_SALT"], max_age=expiration
+                token, salt=config["API_SECURITY_PASSWORD_SALT"], max_age=expiration
             )
         except:
             return False
+
         return email
 
     @staticmethod
@@ -92,3 +98,20 @@ class User(DBBaseModel, Base):
     def _refresh_auth_token(self):
         new_token = secrets.token_hex(32)
         self._auth_token = new_token
+
+    def send_confirmation_mail(self):
+        href = f"{config['API_URL']}/{config['API_VERSION']}/users/confirm/{self.confirmation_token}"
+        html_body = (
+            "<html>\n"
+            "\t<body>\n"
+            f"\t\tPlease <a target='_blank' href={href}>confirm</a> your account on jargon.\n"
+            "\t</body>\n"
+            "</html>"
+        )
+        
+        send_mail(
+            sender_email="do-not-reply@jargon.org", 
+            receiver_email=self.email,
+            subject=f"Confirm your account on {config['API_DOMAIN']}",
+            html_body=html_body
+        )

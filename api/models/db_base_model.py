@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Any, Optional, TypeVar
 
 from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import Session
@@ -24,6 +24,19 @@ class DBBaseModel:
         key: str = "id",
     ) -> Class:
         return db.query(cls).filter(getattr(cls, key) == value).first()
+
+    @classmethod
+    def index(
+        cls: Class,
+        db: Session,
+        limit: Optional[int] = None,
+        offset: int = 0,
+    ):
+        query = db.query(cls).offset(offset)
+        if limit:
+            query = query.limit(limit)
+
+        return query.all()
 
     def delete(self, db: Session) -> None:
         db.query(self.__class__).filter(self.__class__.id == self.id).delete()
