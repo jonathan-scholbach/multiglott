@@ -1,4 +1,4 @@
-# vue-testapp
+# jargon-frontend
 
 ## Project setup
 ```

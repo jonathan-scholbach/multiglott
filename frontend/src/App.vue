@@ -17,14 +17,22 @@
 import VueRouter from "vue-router"
 
 import HeaderNav from "./components/HeaderNav.vue"
-import WelcomePage from "./components/WelcomePage.vue"
+import HomePage from "./components/HomePage.vue"
 import LoginPage from "./components/LoginPage.vue"
 import RegisterPage from "./components/RegisterPage.vue"
 
+import "jquery/src/jquery.js";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import "./assets/styles/style.scss";
+
+
+
 const routes = [
-  { path: "/", component: WelcomePage },
+  { path: "/", component: HomePage },
   { path: "/login", component: LoginPage },
   { path: "/register", component: RegisterPage },
+  { path: "/logout"}
 ]
 
 const router = new VueRouter({
@@ -33,6 +41,7 @@ const router = new VueRouter({
 
 export default {
   name: "App",
+  router: router,
   computed: {
     "currentPage": function() {
       switch(this.$route.fullPath) {
@@ -40,21 +49,16 @@ export default {
           return LoginPage
         case "/register":
           return RegisterPage
+        case "/logout":
+          this.$store.commit("removeUser")
+          return HomePage
         default:
-          return WelcomePage
+          return HomePage
       }
-    }
+    },
   },
   components: {
     HeaderNav
   },
-  router: router
 }
 </script>
-
-<style>
-  @import "/bootstrap/dist/css/bootstrap.min.css";
-  @import "/bootstrap/dist/js/bootstrap.min.js";
-  @import "/jquery/src/jquery.js";
-  @import "/assets/styles/style.scss";
-</style>

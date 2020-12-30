@@ -37,7 +37,7 @@
     </form>
 </template>
 
-<script>
+<script>    
     export default {
         name: "RegisterForm",
         data: function() {
