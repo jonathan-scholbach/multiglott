@@ -1,8 +1,10 @@
-import hashlib
 import os
+import secrets
 
 from datetime import datetime
 from typing import Any
+
+from passlib.hash import pbkdf2_sha256
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session
@@ -10,66 +12,56 @@ from sqlalchemy.orm import Session
 from itsdangerous import URLSafeTimedSerializer
 
 from config import config
-from database import Base
 from schemas.user import UserBase
+from .db_base_model import DBBaseModel
+from database import Base
 
 
-def get_confirmation_token(email: str) -> str:
-    serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
-
-    return serializer.dumps(email, salt=config["SECURITY_PASSWORD_SALT"])
-
-
-def confirm_token(token: str, expiration: int=3600):
-    serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
-    try:
-        email = serializer.loads(
-            token,
-            salt=config["SECURITY_PASSWORD_SALT"],
-            max_age=expiration
-        )
-    except:
-        return False
-    return email
-
-def hash_password(password: str, salt: str) -> str:
-    return hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode("utf-8"),
-        salt,
-        100000
-    )
-
-class User(Base):
+class User(DBBaseModel, Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime)
     name = Column(String)
     email = Column(String)
-    password = Column(String)
-    salt = Column(String)
+    
+    password_hash = Column(String)
+    
     confirmation_token = Column(String)
     confirmed = Column(Boolean, default=False)
 
-    @classmethod
-    def get(cls, db: Session, value: Any, key: str = "id", ) -> "User":
-        return db.query(cls).filter(getattr(cls, key) == value).first()
+    _auth_token = Column(String, nullable=True, default=None)
+
+    @staticmethod
+    def create_confirmation_token(email: str) -> str:
+        serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+
+        return serializer.dumps(email, salt=config["SECURITY_PASSWORD_SALT"])
+
+    @staticmethod
+    def confirm_token(token: str, expiration: int=3600):
+        serializer = URLSafeTimedSerializer(config["SECRET_KEY"])
+        try:
+            email = serializer.loads(
+                token,
+                salt=config["SECURITY_PASSWORD_SALT"],
+                max_age=expiration
+            )
+        except:
+            return False
+        return email
+
+    @staticmethod
+    def hash_password(plaintext_password: str) -> str:
+        return pbkdf2_sha256.hash(plaintext_password)
 
     @classmethod
     def create(cls, db: Session, user: UserBase) -> "User":
-        salt = os.urandom(32)
-        hashed_password = hash_password(
-            password=user.password, 
-            salt=salt
-        )
+        hashed_password = User.hash_password(plaintext_password=user.password)
         db_user = cls(
             email=user.email,
             name=user.name,
-            password=hashed_password,
-            salt=salt,
+            password_hash=hashed_password,
             created_at=datetime.now(),
-            confirmation_token=get_confirmation_token(user.email)
+            confirmation_token=User.create_confirmation_token(user.email)
         )
         db.add(db_user)
         db.commit()
@@ -77,7 +69,16 @@ class User(Base):
 
         return db_user
 
-    @classmethod
-    def delete(cls, db: Session, id: int):
-        db.query(User).filter(User.id == id).delete()
-        db.commit()
+    def verify_password(self, plaintext_password: str) -> bool:
+        return pbkdf2_sha256.verify(plaintext_password, self.password_hash)
+
+    @property
+    def auth_token(self):
+        if not self._auth_token:
+            self._refresh_auth_token()
+
+        return self._auth_token
+    
+    def _refresh_auth_token(self):
+        new_token = secrets.token_hex(32)
+        self._auth_token = new_token
