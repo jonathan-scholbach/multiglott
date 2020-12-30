@@ -15,7 +15,7 @@ class UserWithPassword(UserBase):
 class User(UserBase):
     id: int
     auth_token: str
-    
+
     class Config:
         orm_mode = True
 

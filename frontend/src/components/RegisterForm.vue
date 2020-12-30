@@ -81,10 +81,8 @@
                                 "Content-Type": "plain/text ",
                             }
                         }
-                    ).then((response) => {
-                        console.log(response)
-                    }).catch((error) => {
-                        console.log(error)
+                    ).catch((error) => {
+                        this.errors.push(error.response.data.detail)
                     })
                 }
             }

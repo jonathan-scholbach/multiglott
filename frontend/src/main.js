@@ -14,7 +14,6 @@ Vue.use(BootstrapVue)
 
 Vue.prototype.$http = axios
 
-
 const store = new Vuex.Store({
   state: {
     user: null,
@@ -62,6 +61,8 @@ const store = new Vuex.Store({
   }
 })
 
+
+axios.defaults.headers.common['Authorization'] = store.authToken
 
 new Vue({
   render: h => h(App),

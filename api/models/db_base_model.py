@@ -12,12 +12,17 @@ class DBBaseModel:
     @declared_attr
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
-    
-    id = Column(Integer, primary_key=True)
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
     created_at = Column(DateTime)
 
     @classmethod
-    def get(cls: Class, db: Session, value: Any, key: str = "id", ) -> Class:
+    def get(
+        cls: Class,
+        db: Session,
+        value: Any,
+        key: str = "id",
+    ) -> Class:
         return db.query(cls).filter(getattr(cls, key) == value).first()
 
     def delete(self, db: Session) -> None:
