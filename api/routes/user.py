@@ -3,39 +3,56 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from main import get_db
+from database import get_db
 from models import User
-from schemas import UserBase, UserSchema, AuthToken, UserWithPassword, UserWithAuthToken
+from schemas import (
+    UserBase,
+    UserSchema,
+    UserWithPassword,
+    UserWithAuthToken
+)
+from middleware.auth import get_current_user
 
 
-user_router = APIRouter(prefix="/users")
+user_routes = APIRouter(prefix="/users")
 
 
-@user_router.get("/", response_model=List[UserSchema])
+@user_routes.get("/me", response_model=UserSchema)
+def read_users_me(user: User = Depends(get_current_user)):
+    return user
+
+
+@user_routes.get("/", response_model=List[UserSchema])
 def index_users(db: Session = Depends(get_db)):
     return User.index(db=db)
 
 
-@user_router.post("/", response_model=UserSchema)
+@user_routes.post("/", response_model=UserSchema)
 def create_user(user: UserWithPassword, db: Session = Depends(get_db)):
     db_user = User.create(db, user)
-    db_user.send_confirmation_mail()
+    try:
+        db_user.send_confirmation_mail()
+    except:
+        db_user.delete()
+        raise HTTPException(
+            status_code=501, detail="Failed to send confirmation email."
+        )
 
     return db_user
 
 
-@user_router.delete("/{id}")
+@user_routes.delete("/{id}")
 def delete_user(id: int, db: Session = Depends(get_db)):
     id = int(id)
     return User.delete(db, id)
 
 
-@user_router.get("/confirm/{token}", response_model=UserSchema)
+@user_routes.get("/confirm/{token}", response_model=UserSchema)
 def confirm_user(token: str, db: Session = Depends(get_db)):
-    email = User.confirmation_token(token=token)
+    email = User.verification_token(token=token)
     db_user = User.get(db=db, value=email, key="email")
     if db_user:
-        db_user.confirmed = True
+        db_user.verified = True
         db.add(db_user)
         db.commit()
 
@@ -46,7 +63,7 @@ def confirm_user(token: str, db: Session = Depends(get_db)):
         )
 
 
-@user_router.post("/login", response_model=UserWithAuthToken)
+@user_routes.post("/login", response_model=UserWithAuthToken)
 def login_user(user: UserWithPassword, db: Session = Depends(get_db)):
     exception = HTTPException(
         status_code=401, detail="These credentials do not match our records"
@@ -56,23 +73,26 @@ def login_user(user: UserWithPassword, db: Session = Depends(get_db)):
         raise exception
 
     if db_user.verify_password(user.password):
-        if db_user.confirmed:
+        if db_user.verified:
             return db_user
         else:
             raise HTTPException(
                 status_code=401,
-                detail="The email address of this user has not been confirmed yet. Please click the link in the confirmation email.",
+                detail=(
+                    "The email address of this user has not been verified ",
+                    "yet. Please click the link in the confirmation email.",
+                ),
             )
     else:
         raise exception
 
 
-@user_router.get("/logout")
+@user_routes.get("/logout")
 def logout_user(user: UserBase, db: Session = Depends(get_db)):
     db_user = User.get(db=db, value=user.id)
     db_user.refresh_auth_token()
 
 
-@user_router.get("/{email}", response_model=UserSchema)
+@user_routes.get("/{email}", response_model=UserSchema)
 def fetch_user(id: int, db: Session = Depends(get_db)):
     return User.get(db=db, value=email, key="email")

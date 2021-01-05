@@ -4,31 +4,31 @@ import secrets
 from datetime import datetime
 from typing import Any
 
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 from itsdangerous import URLSafeTimedSerializer
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, relationship
 
 from config import config
-from schemas.user import UserBase
-from .db_base_model import DBBaseModel
 from database import Base
 from mail import send_mail
+from main import get_db
+from models.db_model import DBModel
+from schemas.user import UserBase
 
-class User(DBBaseModel, Base):
-    __tablename__ = "users"
 
+class User(DBModel, Base):
     name = Column(String, unique=True)
     email = Column(String, unique=True)
 
     password_hash = Column(String)
 
-    confirmation_token = Column(String)
-    confirmed = Column(Boolean, default=False)
+    verification_token = Column(String)
+    verified = Column(Boolean, default=False)
 
-    _auth_token = Column(String, nullable=True, default=None)
+    owned_courses = relationship("Course")
 
     @classmethod
     def create(cls, db: Session, user: UserBase) -> "User":
@@ -38,7 +38,7 @@ class User(DBBaseModel, Base):
                 detail=(
                     f"The name {user.name} is already in use. ",
                     f"Please pick a different user name.",
-                )
+                ),
             )
 
         if User.get(db=db, value=user.email, key="email"):
@@ -46,8 +46,8 @@ class User(DBBaseModel, Base):
                 status_code=422,
                 detail=(
                     f"There is already an account linked to the email ",
-                    f"{user.email}."
-                )
+                    f"{user.email}.",
+                ),
             )
 
         db_user = cls(
@@ -55,7 +55,7 @@ class User(DBBaseModel, Base):
             name=user.name,
             password_hash=User.hash_password(plaintext_password=user.password),
             created_at=datetime.now(),
-            confirmation_token=User.create_confirmation_token(user.email),
+            verification_token=User.create_verification_token(user.email),
         )
         db.add(db_user)
         db.commit()
@@ -64,20 +64,24 @@ class User(DBBaseModel, Base):
         return db_user
 
     @staticmethod
-    def create_confirmation_token(email: str) -> str:
+    def create_verification_token(email: str) -> str:
         serializer = URLSafeTimedSerializer(config["API_SECRET_KEY"])
 
-        return serializer.dumps(email, salt=config["API_SECURITY_PASSWORD_SALT"])
+        return serializer.dumps(
+            email, salt=config["API_SECURITY_PASSWORD_SALT"]
+        )
 
     @staticmethod
-    def confirmation_token(token: str, expiration: int = 3600):
+    def verification_token(token: str) -> str:
         serializer = URLSafeTimedSerializer(config["API_SECRET_KEY"])
         try:
             email = serializer.loads(
-                token, salt=config["API_SECURITY_PASSWORD_SALT"], max_age=expiration
+                token, salt=config["API_SECURITY_PASSWORD_SALT"]
             )
         except:
-            return False
+            raise HTTPException(
+                status_code=401, detail="Invalid Authentication Token."
+            )
 
         return email
 
@@ -88,30 +92,13 @@ class User(DBBaseModel, Base):
     def verify_password(self, plaintext_password: str) -> bool:
         return pbkdf2_sha256.verify(plaintext_password, self.password_hash)
 
-    @property
-    def auth_token(self):
-        if not self._auth_token:
-            self._refresh_auth_token()
-
-        return self._auth_token
-
-    def _refresh_auth_token(self):
-        new_token = secrets.token_hex(32)
-        self._auth_token = new_token
-
     def send_confirmation_mail(self):
-        href = f"{config['API_URL']}/{config['API_VERSION']}/users/confirm/{self.confirmation_token}"
-        html_body = (
-            "<html>\n"
-            "\t<body>\n"
-            f"\t\tPlease <a target='_blank' href={href}>confirm</a> your account on jargon.\n"
-            "\t</body>\n"
-            "</html>"
-        )
-        
+        href = f"http://{config['API_URL']}/{config['API_VERSION']}/users/confirm/{self.verification_token}"
+        html_body = f'\t\tPlease <a target="_blank" href="{href}">confirm</a> your account on jargon.\n'
+
         send_mail(
-            sender_email="do-not-reply@jargon.org", 
+            sender_email="do-not-reply@jargon.org",
             receiver_email=self.email,
             subject=f"Confirm your account on {config['API_DOMAIN']}",
-            html_body=html_body
+            html_body=html_body,
         )

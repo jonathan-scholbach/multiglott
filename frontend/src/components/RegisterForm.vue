@@ -32,7 +32,9 @@
                 <label for="repeatPassword">Repeat Password</label><br>
                 <input class="form-control" type="password" id="repeatPassword" v-model="repeatPassword"/>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>    
         </div>
     </form>
 </template>

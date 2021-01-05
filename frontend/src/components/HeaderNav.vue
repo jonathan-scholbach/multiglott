@@ -5,16 +5,25 @@
                 <li class="nav-item">
                     <router-link to="/" class="nav-link active">Home</router-link>
                 </li>
+                 <li v-if="this.$store.getters.loggedIn" class="nav-item">
+                    <router-link to="/profile" class="nav-link active">Profile</router-link>
+                </li>
             </ul>
-            <ul class="navbar-nav">
-                <li v-if="!this.$store.getters.loggedIn" class="nav-item">
-                    <router-link to="/login" class="nav-link active">Login</router-link>
+            <ul v-if="!this.$store.getters.loggedIn" class="navbar-nav">
+                <li class="nav-item">
+                    <router-link to="/login" class="btn btn-outline-primary nav-link active">Login</router-link>
                 </li>
-                <li v-if="!this.$store.getters.loggedIn" class="nav-item">
-                    <router-link to="/register" class="nav-link active">Register</router-link>
+                <li class="nav-item">
+                    <router-link to="/register" class="btn btn-primary nav-link active">Register</router-link>
                 </li>
-                <li v-if="this.$store.getters.loggedIn" class="nav-item">
-                    <router-link to="/logout" class="nav-link active">Logout <span class="username">{{ this.$store.getters.user.name }}</span></router-link>
+            </ul>
+
+            <ul v-if="this.$store.getters.loggedIn" class="navbar-nav">
+                <li class="nav-item">
+                    <router-link to="/create-course" class="btn btn-outline-primary nav-link active">Create Course</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/logout" class="nav-link active">Logout</router-link>
                 </li>
             </ul>
         </div>

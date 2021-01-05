@@ -6,6 +6,7 @@ import BootstrapVue from "bootstrap-vue"
 import axios from "axios"
 
 import App from "./App.vue"
+import apiSetup from "./middleware/axios"
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
@@ -23,10 +24,10 @@ const store = new Vuex.Store({
       return state.user
     },
 
-    authToken: state => {
+    token: state => {
       if (state.user !== null){
-          if (state.user.authToken) {
-            return state.user.authToken
+          if (state.user["authToken"]) {
+            return state.user["authToken"]
           }
       }
       return null
@@ -43,15 +44,15 @@ const store = new Vuex.Store({
   },
   mutations: {
     initialiseStore(state) {
-			if(localStorage.getItem("store")) {
+            if(localStorage.getItem("store")) {
         this.replaceState(
-					Object.assign(state, JSON.parse(localStorage.getItem("store")))
-				);
+                    Object.assign(state, JSON.parse(localStorage.getItem("store")))
+                );
       }
       this.subscribe((mutation, state) => {
         localStorage.setItem("store", JSON.stringify(state))
       });
-		},
+        },
     setUser (state, user) {
       state.user = user
     },
@@ -61,8 +62,7 @@ const store = new Vuex.Store({
   }
 })
 
-
-axios.defaults.headers.common['Authorization'] = store.authToken
+apiSetup(store)
 
 new Vue({
   render: h => h(App),

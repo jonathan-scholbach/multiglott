@@ -1,12 +1,51 @@
-$base-size: 20px;
-$theme-color: #33dd33;
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
 
-.page {
-    max-width: 800px !important;
-    margin: auto;
-    margin-top: $base-size; 
+$base-size: 20px;
+$theme-color: #ee4488;
+$theme-secondary-color: #007bff;
+$theme-background-color: #fff;
+$main-font: "Source Sans Pro";
+$primary: $theme-color;
+
+$default-page-width: 800px;
+$default-border-width: 3px;
+$default-border-radius: 0px;
+
+body {
+    font-family: $main-font;
 }
 
+.emph {
+    font-style: italic;
+}
+
+.brand {
+    color: $theme-color;
+    font-weight: bold;
+}
+
+.highlight {
+    color: $theme-secondary-color;
+}
+
+.navbar{
+    background-color: transparent !important;
+    border: $default-border-width solid $theme-color !important;
+}
+
+.page {
+    max-width: $default-page-width !important;
+    margin: auto;
+    margin-top: $base-size; 
+    text-align: justify;
+}
+
+.page-title {
+    width: 100%;
+    font-size: 3*$base-size;
+    color: $theme-secondary-color;
+    text-align: center;
+}
 .page-content{
     margin-top: 2*$base-size;
 }
@@ -14,4 +53,56 @@ $theme-color: #33dd33;
 .username {
     font-style: bold;
     color: $theme-color;
+}
+
+.btn {
+    border-radius: $default-border-radius;
+}
+
+.btn-outline-primary{
+    background-color: transparent !important;
+    border-color: $theme-color !important;
+    border-width: $default-border-width;
+}
+
+.btn-primary {
+    background-color: $theme-color !important;
+    border-color: $theme-color !important;
+    border-width: $default-border-width;
+
+    color: $theme-background-color !important;
+}
+
+.card-header {
+    background-color: $theme-color;
+    color: black;
+    margin: 0 !important;
+}
+
+.card {
+    border-color: $theme-color;
+    border-width: $default-border-width;
+    border-radius: $default-border-radius;
+}
+
+.material-card {
+    width: 100%;
+    padding: $base-size;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);  
+}
+
+.material-card-title {
+    font-size: $base-size;
+}
+
+.material-card-body{
+    margin-top: 12px;
+}
+
+li.nav-item {
+    margin-right: 0.5*$base-size;
+}
+
+li.nav-item:last-child {
+    margin-right: 0px !important;
 }

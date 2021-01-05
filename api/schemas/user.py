@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
@@ -14,11 +15,13 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
+
 class UserWithPassword(UserBase):
     password: str
 
-class UserWithAuthToken(User):
-    auth_token: str
 
-class AuthToken(BaseModel):
-    token: str
+class UserWithAuthToken(User):
+    token: str = Field(alias="auth_token")
+
+    class Config:
+        orm_mode = True

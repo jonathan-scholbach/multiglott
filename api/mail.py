@@ -5,9 +5,11 @@ from email.mime.multipart import MIMEMultipart
 from config import config
 
 
-def send_mail(sender_email: str, receiver_email: str, subject: str, html_body: str):
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "multipart test"
+def send_mail(
+    sender_email: str, receiver_email: str, subject: str, html_body: str
+):
+    message = MIMEMultipart("html")
+    message["Subject"] = subject
     message["From"] = sender_email
     message["To"] = receiver_email
     message.attach(MIMEText(html_body, "html"))

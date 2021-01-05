@@ -1,2 +1,8 @@
-from .user import User as UserSchema, UserBase, UserWithPassword, AuthToken, UserWithAuthToken
-from .course import Course as CourseSchema
+from .auth import Token, TokenData
+from .course import Course, CourseCreate
+from .user import (
+    User as UserSchema,
+    UserBase,
+    UserWithPassword,
+    UserWithAuthToken,
+)

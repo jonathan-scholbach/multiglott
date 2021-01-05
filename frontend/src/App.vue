@@ -16,23 +16,53 @@
 <script>
 import VueRouter from "vue-router"
 
-import HeaderNav from "./components/HeaderNav.vue"
-import HomePage from "./components/HomePage.vue"
-import LoginPage from "./components/LoginPage.vue"
-import RegisterPage from "./components/RegisterPage.vue"
-
 import "jquery/src/jquery.js";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+
 import "./assets/styles/style.scss";
 
 
+import CoursePage from "./components/CoursePage.vue"
+import CreateCoursePage from "./components/CreateCoursePage.vue"
+import HeaderNav from "./components/HeaderNav.vue"
+import HomePage from "./components/HomePage.vue"
+import LoginPage from "./components/LoginPage.vue"
+import ProfilePage from "./components/ProfilePage.vue"
+import RegisterPage from "./components/RegisterPage.vue"
+
 
 const routes = [
-  { path: "/", component: HomePage },
-  { path: "/login", component: LoginPage },
-  { path: "/register", component: RegisterPage },
-  { path: "/logout"}
+  { 
+    path: "/",
+    name: "home",
+    component: HomePage 
+  },
+  {
+    path: "/login", 
+    name: "login",
+    component: LoginPage },
+  { 
+    path: "/register", 
+    name: "register",
+    component: RegisterPage },
+  { 
+    path: "/profile", 
+    name: "profile",
+    component: ProfilePage},
+  { 
+    path: "/create-course", 
+    name: "createCourse",
+    component: CreateCoursePage },
+  { 
+    path: "/course/:id", 
+    name: "course",
+    component: CoursePage
+  },
+  { 
+    path: "/logout",
+    name: "logout"
+  },
 ]
 
 const router = new VueRouter({
@@ -44,14 +74,21 @@ export default {
   router: router,
   computed: {
     "currentPage": function() {
-      switch(this.$route.fullPath) {
-        case "/login":
+      console.log(this.$route)
+      switch(this.$route.name) {
+        case "login":
           return LoginPage
-        case "/register":
+        case "register":
           return RegisterPage
-        case "/logout":
+        case "logout":
           this.$store.commit("removeUser")
           return HomePage
+        case "profile":
+          return ProfilePage
+        case "course":
+          return CoursePage
+        case "createCourse":
+          return CreateCoursePage
         default:
           return HomePage
       }
