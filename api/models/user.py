@@ -2,12 +2,12 @@ import os
 import secrets
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Iterable
 
 from fastapi import Depends, HTTPException
 from itsdangerous import URLSafeTimedSerializer
 from passlib.hash import pbkdf2_sha256
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Table
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, relationship
 
@@ -15,8 +15,15 @@ from config import config
 from database import Base
 from mail import send_mail
 from main import get_db
+
 from models.db_model import DBModel
+from models.lesson import Lesson
+from models.user_vocab_progress import UserVocabProgress
+from models.vocab import Vocab
+
 from schemas.user import UserBase
+
+from database import get_db
 
 
 class User(DBModel, Base):
@@ -29,6 +36,12 @@ class User(DBModel, Base):
     verified = Column(Boolean, default=False)
 
     owned_courses = relationship("Course")
+    vocabs = relationship(
+        "Vocab",
+        secondary=UserVocabProgress.__table__,
+        back_populates="students",
+        lazy="dynamic",
+    )
 
     @classmethod
     def create(cls, db: Session, user: UserBase) -> "User":
@@ -92,13 +105,82 @@ class User(DBModel, Base):
     def verify_password(self, plaintext_password: str) -> bool:
         return pbkdf2_sha256.verify(plaintext_password, self.password_hash)
 
-    def send_confirmation_mail(self):
-        href = f"http://{config['API_URL']}/{config['API_VERSION']}/users/confirm/{self.verification_token}"
-        html_body = f'\t\tPlease <a target="_blank" href="{href}">confirm</a> your account on jargon.\n'
+    def send_confirmation_mail(self) -> None:
+        href = (
+            f"http://{config['API_URL']}/{config['API_VERSION']}/users/"
+            f"confirm/{self.verification_token}"
+        )
+        html_body = (
+            f'\t\tPlease <a target="_blank" href="{href}">confirm</a> '
+            f'your account on {config["APP_NAME"]} by clicking the link.'
+        )
 
         send_mail(
-            sender_email="do-not-reply@jargon.org",
+            sender_email=f"do-not-reply@{config['APP_NAME']}.org",
             receiver_email=self.email,
-            subject=f"Confirm your account on {config['API_DOMAIN']}",
+            subject=f"Confirm your account on {config['APP_NAME']}",
             html_body=html_body,
         )
+
+    def next_vocab_in_lesson(
+        self,
+        lesson_id: int,
+    ) -> "Vocab":
+        db = next(get_db())
+        vocabs_in_lesson = (
+            db.query(Vocab).filter(Vocab.lesson_id == lesson_id).all()
+        )
+
+        return min(
+            vocabs_in_lesson,
+            key=lambda vocab: self.progress_percentage(
+                db=db, vocab_id=vocab.id
+            ),
+        )
+
+    def _raw_progresss(
+        self,
+        db: Session,
+        vocab_id: int,
+        lookback: int = config["LOOKBACK"],
+    ) -> str:
+        progress_entry = (
+            db.query(UserVocabProgress)
+            .filter(UserVocabProgress.user_id == self.id)
+            .filter(UserVocabProgress.vocab_id == vocab_id)
+            .first()
+        )
+
+        if progress_entry:
+            return progress_entry.progress
+
+        return ""
+
+    def progress_percentage(
+        self,
+        db: Session,
+        vocab_id: int,
+        lookback: int = config["LOOKBACK"],
+    ) -> float:
+        raw_progress = self._raw_progresss(
+            db=db, vocab_id=vocab_id, lookback=lookback
+        )
+        if not raw_progress:
+            return 0
+
+        return sum(int(x) for x in raw_progress[-lookback:]) / lookback
+
+    def accomplishment(
+        self,
+        db: Session,
+        lesson_id: int,
+        lookback: int = config["LOOKBACK"],
+    ) -> float:
+        lesson = Lesson.get(db=db, value=lesson_id)
+
+        return sum(
+            self.progress_percentage(
+                db=db, vocab_id=vocab.id, lookback=lookback
+            )
+            for vocab in lesson.vocabs
+        ) / len(lesson.vocabs)

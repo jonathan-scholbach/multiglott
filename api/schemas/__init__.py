@@ -6,3 +6,4 @@ from .user import (
     UserWithPassword,
     UserWithAuthToken,
 )
+from .vocab import VocabSchema

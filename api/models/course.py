@@ -1,15 +1,19 @@
+from contextlib import suppress
+from typing import List, Optional
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Session
 
 from database import Base
 from models.db_model import DBModel
-from models.language import Language
-from models.user import User
+from privileges import Privilege, AccessConstricted
 from schemas.course import CourseCreate
 
 
-class Course(DBModel, Base):
-    title = Column(String)
+class Course(DBModel, AccessConstricted, Base):
+    title = Column(String, unique=True)
+    slug = Column(String, unique=True)
+
     public = Column(Boolean, default=False)
 
     target_language_id = Column(Integer, ForeignKey("language.id"))
@@ -28,9 +32,10 @@ class Course(DBModel, Base):
     lessons = relationship("Lesson")
 
     @classmethod
-    def create(cls, db, course: CourseCreate, author_id: int):
+    def create(cls, db, course: CourseCreate, author_id: int) -> "Course":
         db_course = cls(
             title=course.title,
+            slug=course.slug,
             target_language_id=course.target_language_id,
             source_language_id=course.source_language_id,
             author_id=author_id,
@@ -42,15 +47,13 @@ class Course(DBModel, Base):
 
         return db_course
 
+    def access_privileges(
+        self, db: Session, user: Optional["User"] = None
+    ) -> List["Privilege"]:
+        privileges = [Privilege.CAN_READ]
 
-class Lesson(DBModel, Base):
-    name = Column(String)
+        with suppress(AttributeError):
+            if self.author_id == user.id:
+                privileges += [Privilege.CAN_EDIT, Privilege.CAN_DELETE]
 
-    course_id = Column(Integer, ForeignKey("course.id"))
-
-
-class Vocab(DBModel, Base):
-    source = Column(String)
-    target = Column(String)
-
-    lesson_id = Column(Integer, ForeignKey("lesson.id"))
+        return privileges

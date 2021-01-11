@@ -46,38 +46,31 @@
         },
         methods: {
             login: function () {
-                this.errors = [];
-                
+                let username = this.email
 
-                if (!this.errors.length){
-                    var username = this.email
+                let params = new URLSearchParams()
+                params.append("username", username)
+                params.append("password", this.password)
 
-                    var params = new URLSearchParams()
-                    params.append("username", username)
-                    params.append("password", this.password)
-
-                     this.$http.post(
-                        "http://localhost:8000/v1/auth/token",
-                        params,
-                        {
-                            headers : {
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            }
+                this.$http.post(
+                    "/auth/token",
+                    params,
+                    {
+                        headers : {
+                            "Content-Type": "application/x-www-form-urlencoded"
                         }
-                    ).then((response) => {
-                        if (response.status == 200) {
-                            let token = response.data.access_token
-                            this.$store.commit(
-                                "setUser", 
-                                {
-                                    name: username,
-                                    authToken: token
-                                }
-                            )
-                            this.$router.push('/')
-                        }
-                    })
-                }
+                    }
+                ).then((response) => {
+                    let token = response.data.access_token
+                    this.$store.commit(
+                        "setToken", 
+                        token
+                    )
+                    this.$router.push('/')
+                }).catch((err) => {
+                    this.$store.commit("removeToken")
+                    this.error = err.response.data.detail
+                })
             }
         }
     }

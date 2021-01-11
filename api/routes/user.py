@@ -1,24 +1,20 @@
 from typing import List
+from logging import getLogger
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
 from models import User
-from schemas import (
-    UserBase,
-    UserSchema,
-    UserWithPassword,
-    UserWithAuthToken
-)
-from middleware.auth import get_current_user
+from schemas import UserBase, UserSchema, UserWithPassword, UserWithAuthToken
+from middleware.auth import get_verified_user
 
 
 user_routes = APIRouter(prefix="/users")
 
 
 @user_routes.get("/me", response_model=UserSchema)
-def read_users_me(user: User = Depends(get_current_user)):
+def read_users_me(user: User = Depends(get_verified_user)):
     return user
 
 
@@ -32,8 +28,10 @@ def create_user(user: UserWithPassword, db: Session = Depends(get_db)):
     db_user = User.create(db, user)
     try:
         db_user.send_confirmation_mail()
-    except:
-        db_user.delete()
+    except Exception as e:
+        db_user.delete(db=db)
+        logger = getLogger("fastapi")
+        logger.log(msg=e, level=40)
         raise HTTPException(
             status_code=501, detail="Failed to send confirmation email."
         )
@@ -94,5 +92,5 @@ def logout_user(user: UserBase, db: Session = Depends(get_db)):
 
 
 @user_routes.get("/{email}", response_model=UserSchema)
-def fetch_user(id: int, db: Session = Depends(get_db)):
+def fetch_user(email: str, db: Session = Depends(get_db)):
     return User.get(db=db, value=email, key="email")

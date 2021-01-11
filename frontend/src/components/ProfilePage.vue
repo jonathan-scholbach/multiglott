@@ -1,21 +1,22 @@
 <template>
     <div>
         <div class="page-body">
-            <div class="page-title">Profile: <strong>{{this.user.name}}</strong></div>
-            <h1>Courses</h1>
+            <h1>Courses You Curate</h1>
             <div 
                 class="material-card" 
                 v-for="course in this.courses" :key="course.created_at"
             >
                 <div class="material-card-title">
-                    <router-link :to="{name: 'course', params: {'id': course.id}}">{{course.title}}</router-link>
+                    <router-link :to="{name: 'course', params: {'slug': course.slug}}">{{course.title}}</router-link>
                     [{{course.source_language.name}} → {{course.target_language.name}}]
                 </div>
                 <div class="material-card-body">
                     
                 </div>
             </div>
-                
+
+            <h1>Courses You Take</h1>
+
 
         </div>
     </div>
@@ -38,7 +39,7 @@ export default {
         "getUser": function() {
             var self = this
             this.$http.get(
-                "http://localhost:8000/v1/me"
+                "/me"
             ).then((response) => {
                 if (response.status == 200) {
                     self.user = response.data
@@ -50,7 +51,7 @@ export default {
         },
         "getCourses": function() {
             var self = this
-            this.$http.get("http://localhost:8000/v1/me/courses").then(
+            this.$http.get("/me/courses").then(
                 (response) => {
                     if (response.status == 200) {
                         self.courses = response.data

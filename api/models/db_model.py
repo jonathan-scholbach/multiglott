@@ -1,11 +1,13 @@
 from contextlib import suppress
 from datetime import datetime
-from typing import Any, List, Optional, TypeVar
+from typing import Any, Iterable, Optional, TypeVar
 
-
+from fastapi import Depends
 from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declared_attr
+
+from database import get_db
 
 
 Class = TypeVar("Class")
@@ -30,19 +32,31 @@ class DBModel:
         return db.query(cls).filter(getattr(cls, key) == value).first()
 
     @classmethod
+    def fetch(
+        cls: Class,
+        db: Session,
+        value: Any,
+        key: str,
+    ) -> Iterable[Class]:
+        return db.query(cls).filter(getattr(cls, key) == value)
+
+    @classmethod
     def index(
         cls: Class,
         db: Session,
         limit: Optional[int] = None,
         offset: int = 0,
-    ) -> List[Class]:
+    ) -> Iterable[Class]:
         query = db.query(cls).offset(offset)
         if limit:
             query = query.limit(limit)
 
         return query.all()
 
-    def delete(self, db: Session) -> None:
+    def delete(
+        self,
+        db: Session,
+    ) -> None:
         db.query(self.__class__).filter(self.__class__.id == self.id).delete()
         db.commit()
 

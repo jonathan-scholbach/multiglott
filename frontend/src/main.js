@@ -6,63 +6,69 @@ import BootstrapVue from "bootstrap-vue"
 import axios from "axios"
 
 import App from "./App.vue"
-import apiSetup from "./middleware/axios"
+import apiSetup from "./middleware/axios.ts"
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(BootstrapVue)
 
-Vue.prototype.$http = axios
+
+const privileges = {
+  "CAN_READ": "can_read",
+  "CAN_EDIT": "can_edit",
+  "CAN_DELETE": "can_delete"
+}
+
+Vue.prototype.$privileges = privileges
+
 
 const store = new Vuex.Store({
   state: {
-    user: null,
+    token: null,
   },
   getters: {
-    user: state => {
-      return state.user
-    },
-
     token: state => {
-      if (state.user !== null){
-          if (state.user["authToken"]) {
-            return state.user["authToken"]
-          }
-      }
-      return null
+      return state.token
     },
-
     loggedIn: state => {
-      if (state.user != null){
-        if (state.user.authToken != null) {
-          return true;
-        }
-      }
-      return false;
+      return Boolean(state.token)
     }
   },
   mutations: {
     initialiseStore(state) {
-            if(localStorage.getItem("store")) {
+      if(localStorage.getItem("store")) {
         this.replaceState(
-                    Object.assign(state, JSON.parse(localStorage.getItem("store")))
-                );
+          Object.assign(state, JSON.parse(localStorage.getItem("store")))
+        );
       }
       this.subscribe((mutation, state) => {
         localStorage.setItem("store", JSON.stringify(state))
       });
-        },
-    setUser (state, user) {
-      state.user = user
     },
-    removeUser (state) {
-      state.user = null
+    setToken (state, token) {
+      state.token = token
+    },
+    removeToken (state) {
+      state.token = null
     }
   }
 })
 
-apiSetup(store)
+var API_URL = (
+  "http://" 
+  + process.env.VUE_APP_API_DOMAIN 
+  + ":" + process.env.VUE_APP_API_PORT 
+  + "/" + process.env.VUE_APP_API_VERSION
+)
+
+export const axiosInstance = axios.create({
+  baseURL: API_URL
+})
+
+apiSetup(store, axiosInstance)
+Vue.prototype.$http = axiosInstance
+
 
 new Vue({
   render: h => h(App),

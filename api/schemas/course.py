@@ -1,22 +1,30 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
+from schemas.lesson import Lesson
 
-class CourseTorse(BaseModel):
+
+class CourseTorso(BaseModel):
     title: str
 
-class Course(CourseTorse):
+
+class Course(CourseTorso):
     id: Optional[int] = None
+    slug: str
+    source_language: str
+    target_language: str
+
+    class Config:
+        orm_mode = True
+
+
+class CourseSubmit(CourseTorso):
     source_language: str
     target_language: str
 
 
-class CourseSubmit(CourseTorse):
-    source_language: str
-    target_language: str
-
-
-class CourseCreate(CourseTorse):
+class CourseCreate(CourseTorso):
+    slug: str
     source_language_id: int
     target_language_id: int

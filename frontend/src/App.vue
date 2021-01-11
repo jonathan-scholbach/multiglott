@@ -23,10 +23,11 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "./assets/styles/style.scss";
 
 
-import CoursePage from "./components/CoursePage.vue"
-import CreateCoursePage from "./components/CreateCoursePage.vue"
+import CoursePage from "./components/Course/CoursePage.vue"
+import CreateCoursePage from "./components/Course/CreateCoursePage.vue"
 import HeaderNav from "./components/HeaderNav.vue"
 import HomePage from "./components/HomePage.vue"
+import LessonPage from "./components/Lesson/LessonPage.vue"
 import LoginPage from "./components/LoginPage.vue"
 import ProfilePage from "./components/ProfilePage.vue"
 import RegisterPage from "./components/RegisterPage.vue"
@@ -36,16 +37,18 @@ const routes = [
   { 
     path: "/",
     name: "home",
-    component: HomePage 
+    component: HomePage,
   },
   {
     path: "/login", 
     name: "login",
-    component: LoginPage },
+    component: LoginPage,
+  },
   { 
     path: "/register", 
     name: "register",
-    component: RegisterPage },
+    component: RegisterPage,
+  },
   { 
     path: "/profile", 
     name: "profile",
@@ -55,13 +58,20 @@ const routes = [
     name: "createCourse",
     component: CreateCoursePage },
   { 
-    path: "/course/:id", 
+    path: "/course/:slug", 
     name: "course",
-    component: CoursePage
+    props: true,
+    component: CoursePage,
+  },
+  {
+    path: "/course/:courseSlug/lesson/:lessonSlug",
+    name: "lesson",
+    props: true,
+    component: LessonPage,
   },
   { 
     path: "/logout",
-    name: "logout"
+    name: "logout",
   },
 ]
 
@@ -74,19 +84,20 @@ export default {
   router: router,
   computed: {
     "currentPage": function() {
-      console.log(this.$route)
       switch(this.$route.name) {
         case "login":
           return LoginPage
         case "register":
           return RegisterPage
         case "logout":
-          this.$store.commit("removeUser")
+          this.$store.commit("removeToken")
           return HomePage
         case "profile":
           return ProfilePage
         case "course":
           return CoursePage
+        case "lesson":
+          return LessonPage
         case "createCourse":
           return CreateCoursePage
         default:

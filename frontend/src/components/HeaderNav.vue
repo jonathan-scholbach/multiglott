@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <router-link to="/" class="nav-link active">Home</router-link>
+                    <router-link to="/" class="nav-link active">Courses</router-link>
                 </li>
                  <li v-if="this.$store.getters.loggedIn" class="nav-item">
                     <router-link to="/profile" class="nav-link active">Profile</router-link>

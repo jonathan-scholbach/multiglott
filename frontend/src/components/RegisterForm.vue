@@ -72,7 +72,7 @@
 
                 if (!this.errors.length){
                     this.$http.post(
-                        "http://localhost:8000/v1/users/",
+                        "/users/",
                         {
                             name: this.name,
                             email: this.email,
@@ -86,6 +86,9 @@
                     ).catch((error) => {
                         this.errors.push(error.response.data.detail)
                     })
+                } else {
+                    this.$router.push("/")
+                    
                 }
             }
         }

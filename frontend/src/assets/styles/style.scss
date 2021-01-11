@@ -2,13 +2,19 @@
 
 $base-size: 20px;
 $theme-color: #ee4488;
-$theme-secondary-color: #007bff;
+$theme-secondary-color:#7bdd55;
+$theme-tertiary-color:  #007bff;
 $theme-background-color: #fff;
+$theme-disabled-color: #666;
+
+$theme-success-color: $theme-color;
+$theme-danger-color: #ff0000;
+
 $main-font: "Source Sans Pro";
 $primary: $theme-color;
 
 $default-page-width: 800px;
-$default-border-width: 3px;
+$default-border-width: 1px;
 $default-border-radius: 0px;
 
 body {
@@ -40,12 +46,13 @@ body {
     text-align: justify;
 }
 
-.page-title {
+.title {
     width: 100%;
-    font-size: 3*$base-size;
+    font-size: 2.5*$base-size;
     color: $theme-secondary-color;
     text-align: center;
 }
+
 .page-content{
     margin-top: 2*$base-size;
 }
@@ -73,6 +80,28 @@ body {
     color: $theme-background-color !important;
 }
 
+.alert {
+    border-radius: $default-border-radius;
+}
+
+.alert-success {
+    border: None;
+    background-color: $theme-success-color;
+    color: $theme-background-color;
+}
+
+.alert-danger {
+    background-color: $theme-danger-color;
+    color: black;
+}
+
+.alert-answer-correct {
+    text-align: center;
+}
+
+.alert-answer-correct, .alert-answer-wrong {
+    font-size: 1.2*$base-size;
+}
 .card-header {
     background-color: $theme-color;
     color: black;
@@ -86,9 +115,11 @@ body {
 }
 
 .material-card {
+    margin: 0.7*$base-size 0;
     width: 100%;
     padding: $base-size;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);  
+
 }
 
 .material-card-title {
@@ -99,10 +130,41 @@ body {
     margin-top: 12px;
 }
 
+$vocab-card-fontsize: 2*$base-size;
+
+.vocab-card {
+    text-align: center;
+    font-size: $vocab-card-fontsize
+}
+
+.vocab-question{
+    color: $theme-tertiary-color;
+}
+
+.vocab-hint {
+    color: $theme-disabled-color;
+    font-size: 1.5*$base-size;
+}
+
+.vocab-question, .vocab-hint, .vocab-answer, .vocab-answer {
+    margin: $base-size;
+
+    input {
+        font-size: $vocab-card-fontsize;
+        text-align: center;
+    }
+}
+
 li.nav-item {
     margin-right: 0.5*$base-size;
 }
 
 li.nav-item:last-child {
     margin-right: 0px !important;
+}
+
+.vertical-distance-buttons {
+    button:not(:first-child) {
+        margin-left: $base-size
+    }
 }
