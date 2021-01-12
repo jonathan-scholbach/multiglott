@@ -43,11 +43,11 @@ def get_my_courses(user: User = Depends(get_verified_user)):
     ]
 
 
-@me_routes.get("/lesson/{slug}")
+@me_routes.get("/lesson/{id}")
 def get_next_vocab(
-    slug: str, user: User = Depends(get_verified_user), db=Depends(get_db)
+    id: str, user: User = Depends(get_verified_user), db=Depends(get_db)
 ):
-    lesson = Lesson.get(db=db, value=slug, key="slug")
+    lesson = Lesson.get(db=db, value=id, key="id")
     accomplishment = user.accomplishment(db=db, lesson_id=lesson.id)
 
     return {

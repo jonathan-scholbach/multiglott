@@ -1,6 +1,6 @@
 <template>
     <div class="page-body">
-        <div class="material-card container">
+        <div class="material-card container title-card">
             <div class="row">
                 <div class="col-md-6">
                     <router-link :to="{
@@ -14,7 +14,7 @@
                 <div class="col-md-6 text-right">
                     {{ lesson.title }}
 
-                    (<span class="brand">{{Math.round(accomplishment * 100)}} %</span>)
+                    (<span class="highlight">{{Math.round(accomplishment * 100)}} %</span>)
                 </div> 
             </div>
         </div>

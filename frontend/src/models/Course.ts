@@ -3,8 +3,9 @@ import { Lesson } from "./Lesson"
 
 
 
-export class Course extends ApiModel {
+export default class Course extends ApiModel {
     id: number | undefined;
+    author_id: number | undefined;
     title: string | undefined;
     slug: string | undefined;
     target_language_id: number | undefined;
@@ -15,6 +16,7 @@ export class Course extends ApiModel {
 
     constructor(
         id?: number,
+        author_id?: number,
         title?: string,
         slug?: string,
         target_language_id?: number,
@@ -26,7 +28,8 @@ export class Course extends ApiModel {
         super(["id", "slug"])
         
         this.id = id
-        this.slug=slug
+        this.author_id = author_id
+        this.slug = slug
         this.title = title
         this.target_language_id = target_language_id
         this.target_language = target_language

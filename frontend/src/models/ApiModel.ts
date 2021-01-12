@@ -1,9 +1,11 @@
 import { axiosInstance } from "../main";
 
 
-interface GetRequestBody{
+interface FindRequestBody{
+    entity_type: string;
     key: string;
     value: any;
+    related_models: string[];
 }
 
 
@@ -14,25 +16,32 @@ enum Privilege{
 }
 
 
-class ApiGetter {
+class ApiFinder {
     endpoint: string;
+    entity_type: string;
     http: any;
 
-    constructor(endpoint: string, http = axiosInstance) {
+    constructor(entity_type: string, endpoint: string = "/query/", http = axiosInstance) {
         this.http = http
         if (!endpoint.startsWith("/")) {
             endpoint = "/" + endpoint
         }
+        if (!endpoint.endsWith("/")) {
+            endpoint = endpoint + "/"
+        }
         this.endpoint = endpoint
+        this.entity_type = entity_type
     }
 
-    async get(value: any, key: string = "id") {
-        let body: GetRequestBody = {
+    async find(value: any, key: string, relatedModels: string[] = []) {
+        let body: FindRequestBody = {
+            entity_type: this.entity_type,
             key: key,
-            value: value
+            value: value,
+            related_models: relatedModels
         }
-
-        this.http.get(
+        
+        let response = await this.http.post(
             this.endpoint,
             body,
             {
@@ -40,40 +49,37 @@ class ApiGetter {
                     "Content-Type": "application/json"
                 }
             }
-        ).then(
-            (response) => {
-                return response.data
-            }
-        ).catch((error) => {
-            console.log(error)
-        })
+        
+        )
+        return response.data
     }
-
-
 }
 
 
 export class ApiModel  {
-    ENDPOINT: string
+    ENTITY_TYPE: string
     IDENTIFIERS: string[]
     
-    getter: ApiGetter
+    finder: ApiFinder
     privileges: Privilege[] | undefined
 
-    constructor(identifiers: string[], endpoint?: string){
-        if (!endpoint){
-            endpoint = this.constructor.name.toLowerCase() + "s"
+    constructor(identifiers: string[], entity_type?: string){
+        if (!entity_type){
+            entity_type = this.constructor.name
         }
-        this.ENDPOINT = endpoint
-        this.IDENTIFIERS = identifiers 
-        this.getter = new ApiGetter(this.ENDPOINT)
+        this.ENTITY_TYPE = entity_type
+        this.IDENTIFIERS = identifiers
+        this.finder = new ApiFinder(this.ENTITY_TYPE)
     }
 
-    find(){
+    async find(relatedModels: string[] = []){
         var data = {}
-        for (let identifier of this.IDENTIFIERS){
-            if (identifier in this){
-                data = this.getter.get(this[identifier], identifier)
+
+        for (let identifier of this.IDENTIFIERS){            
+            if (this[identifier] != undefined){
+                data = await this.finder.find(
+                    this[identifier], identifier, relatedModels
+                )
                 break
             }
         }
@@ -81,8 +87,8 @@ export class ApiModel  {
             throw "Missing identifier while trying to find " + this.constructor.name
         }
         
-        Object.getOwnPropertyNames(this).forEach((key) => {
-            if (key in data){
+        Object.getOwnPropertyNames(data).forEach((key) => {
+            if (data[key] != undefined){
                 this[key] = data[key]
             }
         })

@@ -1,12 +1,12 @@
 from enum import Enum
-from typing import Any, List, Optional, TypeVar
+from typing import Any, List, Optional, Type, TypeVar
 
 
 class Privilege(Enum):
-    CAN_CREATE = "can_create"
-    CAN_READ = "can_read"
-    CAN_EDIT = "can_edit"
-    CAN_DELETE = "can_delete"
+    CAN_CREATE = "CAN_CREATE"
+    CAN_READ = "CAN_READ"
+    CAN_EDIT = "CAN_EDIT"
+    CAN_DELETE = "CAN_DELETE"
 
 
 class AccessConstricted:
@@ -26,3 +26,15 @@ class AccessConstricted:
                 )
 
         AccessConstricted.SUBCLASSES.append(cls)
+
+    @classmethod
+    def get_subclass(cls, subclass_name: str) -> Optional[Type["AccessConstricted"]]:
+        try:
+            return next(
+                subclass
+                for subclass in AccessConstricted.SUBCLASSES
+                if subclass.__name__ == subclass_name
+            )
+
+        except StopIteration:
+            return None

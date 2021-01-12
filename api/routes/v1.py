@@ -6,6 +6,7 @@ from .language import language_routes
 from .lesson import lesson_routes
 from .me import me_routes
 from .privilege import privilege_routes
+from .query import query_route
 from .user import user_routes
 
 
@@ -17,4 +18,5 @@ v1_routes.include_router(language_routes)
 v1_routes.include_router(lesson_routes)
 v1_routes.include_router(me_routes)
 v1_routes.include_router(privilege_routes)
+v1_routes.include_router(query_route)
 v1_routes.include_router(user_routes)

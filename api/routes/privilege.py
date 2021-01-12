@@ -22,13 +22,9 @@ def user_privileges(
     user: Optional["User"] = Depends(get_verified_user_or_none),
     db: "Session" = Depends(get_db),
 ):
-    try:
-        entity_class = next(
-            klass
-            for klass in AccessConstricted.SUBCLASSES
-            if klass.__name__ == entity_type
-        )
-    except StopIteration:
+    entity_class = AccessConstricted.get(entity_type)
+
+    if not entity_class:
         raise HTTPException(
             status_code=422,
             detail="Invalid entity_type `{entity_type}` in privilege request.",

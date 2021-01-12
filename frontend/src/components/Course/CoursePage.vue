@@ -1,21 +1,20 @@
 <template>
-    <div> 
-        <div class="page-body">
-            <div class="title">{{course.title}}</div>
+    <div
+        v-if="this.course" 
+        class="page-body container"
+    >    
+        <div class="material-card title-card">
+            {{ course.title }}
         </div>
-        <div 
-            class="material-card"
+        
+
+        <lesson-card
             v-for="lesson in this.course.lessons" :key="lesson.title"
+            v-bind:slug="lesson.slug"
+            v-bind:course="course"
         >
-            <router-link :to="{
-                name: 'lesson',
-                params: {
-                    courseSlug: course.slug,
-                    lessonSlug: lesson.slug
-                }
-            }">{{lesson.title}}</router-link>
-            <span v-if="$store.getters.loggedIn" style="float:right">78 %</span>
-        </div> 
+        </lesson-card>
+ 
 
         <div class="text-right">
         <b-button 
@@ -41,22 +40,24 @@
 </template>
 
 <script>
-import UploadFileForm from '../UploadFileForm.vue'
-import Course from "../../models/Course.ts"
+import UploadFileForm from "../UploadFileForm.vue"
+import LessonCard from "../Lesson/LessonCard.vue"
 
+import Course from "../../models/Course"
 
 
 export default {
-  components: { UploadFileForm },
+  components: { UploadFileForm, LessonCard },
     name: "CoursePage",
     data: function() {
         return {
-            course: Course,
+            course: null,
             user: {},
         }
     },
-    mounted: function() {
-        this.getCourse()
+    created: async function() {
+        let course = await this.getCourse()
+        this.course = course
         this.getUser()
     },
     methods: {
@@ -70,14 +71,16 @@ export default {
                 console.log(error)
             })
         },
-        getCourse: function() {
-            this.course.slug = this.$route.params.slug,
-            this.course.find()
+        getCourse: async function() {
+            let course = new Course()
+            course.slug = this.$route.params.slug
+            await course.find(["lessons"])
+            return course
         },
     },
     computed: {
         allowEdit: function() {
-            try{
+            try {
                 return this.course.author_id == this.user.id
             }
             catch{

@@ -1,7 +1,16 @@
 import os
 from typing import Any, List, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, Form
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    Form,
+)
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -41,3 +50,29 @@ def create_lesson(
     )
 
     return db_lesson
+
+
+@lesson_routes.post("/find")
+def find_lesson(
+    key: str = Body(...),
+    value: str = Body(...),
+    related_models: str = Body(...),
+    db: Session = Depends(get_db),
+):
+    lesson = Lesson.get(db=db, value=value, key=key)
+
+    if not lesson:
+        raise HTTPException(
+            status_code=404, detail=f"Cannot find Lesson with {key} = {value}."
+        )
+
+    serialized_lesson = jsonable_encoder(lesson)
+
+    serialized_lesson.update(
+        {
+            related_model: getattr(lesson, related_model)
+            for related_model in related_models
+        }
+    )
+
+    return serialized_lesson

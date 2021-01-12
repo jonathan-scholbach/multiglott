@@ -1,6 +1,7 @@
-from typing import List
+from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -25,6 +26,7 @@ def index_courses(db: Session = Depends(get_db)):
             "slug": course.slug,
             "source_language": course.source_language.name,
             "target_language": course.target_language.name,
+            "author_id": course.author_id,
         }
         for course in Course.index(db=db)
     ]
@@ -60,22 +62,30 @@ def fetch_lesson(
     }
 
 
-@course_routes.get("/{slug}")
-def fetch_course(slug: str, db=Depends(get_db)):
-    course = Course.get(db=db, value=slug, key="slug")
+@course_routes.post("/find")
+def find_course(
+    key: Any = Body(...),
+    value: Any = Body(...),
+    related_models: List[str] = Body(...),
+    db=Depends(get_db),
+):
+    course = Course.get(db=db, value=value, key=key)
+
     if not course:
         raise HTTPException(
-            status_code=404, detail="Course with that slug not found."
+            status_code=404, detail=f"Cannot find Course with {key} = {value}."
         )
-    return {
-        "id": course.id,
-        "title": course.title,
-        "source_language": course.source_language,
-        "target_language": course.target_language,
-        "lessons": course.lessons,
-        "author_id": course.author_id,
-        "slug": course.slug,
-    }
+
+    serialized_course = jsonable_encoder(course)
+
+    serialized_course.update(
+        {
+            related_model: getattr(course, related_model)
+            for related_model in related_models
+        }
+    )
+
+    return serialized_course
 
 
 @course_routes.post("/")

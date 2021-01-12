@@ -14,6 +14,7 @@ class Course(CourseTorso):
     slug: str
     source_language: str
     target_language: str
+    author_id: Optional[int]
 
     class Config:
         orm_mode = True
