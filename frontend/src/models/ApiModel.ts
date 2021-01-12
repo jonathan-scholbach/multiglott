@@ -1,5 +1,4 @@
-import { axiosInstance } from "../main.js";
-import { Privilege } from "./Privilege"
+import { axiosInstance } from "../main";
 
 
 interface GetRequestBody{
@@ -59,7 +58,7 @@ export class ApiModel  {
     IDENTIFIERS: string[]
     
     getter: ApiGetter
-    privileges?: Privilege[]
+    privileges: Privilege[] | undefined
 
     constructor(identifiers: string[], endpoint?: string){
         if (!endpoint){

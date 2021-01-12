@@ -4,14 +4,14 @@ import { Lesson } from "./Lesson"
 
 
 export class Course extends ApiModel {
-    id?: number;
-    title?: string;
-    slug?: string;
-    target_language_id?: number;
-    target_language?: string;
-    source_language_id?: number;
-    source_language?: string;
-    lessons?: Lesson[];
+    id: number | undefined;
+    title: string | undefined;
+    slug: string | undefined;
+    target_language_id: number | undefined;
+    target_language: string | undefined;
+    source_language_id: number | undefined;
+    source_language: string | undefined;
+    lessons: Lesson[] | undefined;
 
     constructor(
         id?: number,

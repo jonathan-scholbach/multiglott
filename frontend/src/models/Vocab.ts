@@ -1,9 +1,6 @@
-import { ApiGetter } from "./ApiModel"
+import { ApiModel } from "./ApiModel"
 
-export {Vocab, VocabGetter}
 
-const VocabGetter = new ApiGetter("vocabs")
-
-class Vocab {
-
+export class Vocab extends ApiModel {
+    ENDPOINT = "vocabs"
 }

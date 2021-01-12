@@ -6,7 +6,7 @@ import BootstrapVue from "bootstrap-vue"
 import axios from "axios"
 
 import App from "./App.vue"
-import apiSetup from "./middleware/axios.ts"
+import apiSetup from "./middleware/axios"
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
