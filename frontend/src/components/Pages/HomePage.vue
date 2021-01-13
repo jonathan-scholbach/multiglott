@@ -4,12 +4,11 @@
             class="material-card" 
             v-for="course in courses" :key="course.id"
         >
-            <div class="material-card-title">
-                <router-link :to="{name: 'course', params: {'slug': course.slug}}">{{course.title}}</router-link>
-                [{{course.source_language}} → {{course.target_language}}]
-            </div>
-            <div class="material-card-body">
-                
+            <div class="material-card-content">
+                <div class="material-card-title">
+                    <router-link :to="{name: 'course', params: {'slug': course.slug}}">{{course.title}}</router-link>
+                    [{{course.source_language}} → {{course.target_language}}]
+                </div>
             </div>
         </div>
     </div>     

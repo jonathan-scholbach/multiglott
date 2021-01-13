@@ -4,7 +4,9 @@
         class="page-body container"
     >    
         <div class="material-card title-card">
-            {{ course.title }}
+            <div class="material-card-content">
+                {{ course.title }}
+            </div>
         </div>
         
         <lesson-card

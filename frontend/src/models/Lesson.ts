@@ -1,3 +1,5 @@
+import { axiosInstance } from "../main";
+
 import { ApiModel }  from "./ApiModel"
 import { Vocab } from "./Vocab"
 
@@ -10,9 +12,9 @@ export default class Lesson extends ApiModel  {
     slug: string | null = null;
     course_id: number | null = null;
     vocabs: Vocab[] = [];
-    
+    accomplishment: number | null = null;
 
-    async getAccomplishment(http): number {
+    async getAccomplishment(http = axiosInstance): number {
         if (this.id == undefined) {
             await this.constructor.find()
         }
@@ -22,11 +24,7 @@ export default class Lesson extends ApiModel  {
         return response.data.accomplishment
     }
 
-    async getNextVocable(http) {
-        if (this.id == undefined) {
-            await this.constructor.find()
-        }
-
+    async getNextVocab(http = axiosInstance) {
         var url = "/me/lesson/" + this.id
 
         let response = await http.get(url)

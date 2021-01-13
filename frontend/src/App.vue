@@ -25,12 +25,12 @@ import "./assets/styles/style.scss";
 
 import CoursePage from "./components/Course/CoursePage.vue"
 import CreateCoursePage from "./components/Course/CreateCoursePage.vue"
-import HeaderNav from "./components/HeaderNav.vue"
-import HomePage from "./components/HomePage.vue"
+import HeaderNav from "./components/Pages/HeaderNav.vue"
+import HomePage from "./components/Pages/HomePage.vue"
 import LessonPage from "./components/Lesson/LessonPage.vue"
-import LoginPage from "./components/LoginPage.vue"
-import ProfilePage from "./components/ProfilePage.vue"
-import RegisterPage from "./components/RegisterPage.vue"
+import LoginPage from "./components/Pages/LoginPage.vue"
+import ProfilePage from "./components/Pages/ProfilePage.vue"
+import RegisterPage from "./components/Pages/RegisterPage.vue"
 
 
 const routes = [
