@@ -7,11 +7,10 @@
             {{ course.title }}
         </div>
         
-
         <lesson-card
             v-for="lesson in this.course.lessons" :key="lesson.title"
             v-bind:slug="lesson.slug"
-            v-bind:course="course"
+            v-bind:courseSlug="course.slug"
         >
         </lesson-card>
  
@@ -72,9 +71,9 @@ export default {
             })
         },
         getCourse: async function() {
-            let course = new Course()
-            course.slug = this.$route.params.slug
-            await course.find(["lessons"])
+            let course = await Course.find(
+                "slug", this.$route.params.slug, ["lessons"]
+            )
             return course
         },
     },

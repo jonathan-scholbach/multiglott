@@ -15,9 +15,9 @@ Vue.use(BootstrapVue)
 
 
 const privileges = {
-  "CAN_READ": "can_read",
-  "CAN_EDIT": "can_edit",
-  "CAN_DELETE": "can_delete"
+  "CAN_READ": "CAN_READ",
+  "CAN_EDIT": "CAN_EDIT",
+  "CAN_DELETE": "CAN_DELETE",
 }
 
 Vue.prototype.$privileges = privileges

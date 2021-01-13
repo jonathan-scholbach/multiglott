@@ -4,37 +4,15 @@ import { Lesson } from "./Lesson"
 
 
 export default class Course extends ApiModel {
-    id: number | undefined;
-    author_id: number | undefined;
-    title: string | undefined;
-    slug: string | undefined;
-    target_language_id: number | undefined;
-    target_language: string | undefined;
-    source_language_id: number | undefined;
-    source_language: string | undefined;
-    lessons: Lesson[] | undefined;
+    static IDENTIFIERS = ["id", "slug"]
 
-    constructor(
-        id?: number,
-        author_id?: number,
-        title?: string,
-        slug?: string,
-        target_language_id?: number,
-        target_language?: string,
-        source_language_id?: number,
-        source_language?: string,
-        lessons?: Lesson[],
-    ){
-        super(["id", "slug"])
-        
-        this.id = id
-        this.author_id = author_id
-        this.slug = slug
-        this.title = title
-        this.target_language_id = target_language_id
-        this.target_language = target_language
-        this.source_language_id = source_language_id
-        this.source_language = source_language
-        this.lessons = lessons
-    }
+    id: number | undefined = null;
+    author_id: number | undefined = null;
+    title: string | undefined = null;
+    slug: string | undefined = null;
+    target_language_id: number | undefined = null;
+    target_language: string | undefined = null;
+    source_language_id: number | undefined = null;
+    source_language: string | undefined = null;
+    lessons: Lesson[] | undefined = null;
 }

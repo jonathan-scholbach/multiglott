@@ -24,7 +24,7 @@ def find_entity(
     db: Session = Depends(get_db),
 ):
     entity_class = AccessConstricted.get_subclass(subclass_name=entity_type)
-
+    print(entity_type)
     if not entity_class:
         raise HTTPException(
             status_code=400,
@@ -43,6 +43,7 @@ def find_entity(
         related_model: getattr(entity, related_model)
         for related_model in related_models
     }
+    print(related_models, serialized_related_models)
     serialized_entity.update(serialized_related_models)
 
     privileges = {

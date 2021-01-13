@@ -33,7 +33,7 @@ class ApiFinder {
         this.entity_type = entity_type
     }
 
-    async find(value: any, key: string, relatedModels: string[] = []) {
+    async find(key: string, value: any, relatedModels: string[] = []) {
         let body: FindRequestBody = {
             entity_type: this.entity_type,
             key: key,
@@ -57,40 +57,35 @@ class ApiFinder {
 
 
 export class ApiModel  {
-    ENTITY_TYPE: string
-    IDENTIFIERS: string[]
+    static ENTITY_TYPE: string | null = null;
+    static IDENTIFIERS: string[];
     
-    finder: ApiFinder
-    privileges: Privilege[] | undefined
+    privileges: Privilege[] = [];
 
-    constructor(identifiers: string[], entity_type?: string){
-        if (!entity_type){
-            entity_type = this.constructor.name
+    static entity_type(): string {
+        if (this.ENTITY_TYPE !== null) {
+            return this.ENTITY_TYPE
         }
-        this.ENTITY_TYPE = entity_type
-        this.IDENTIFIERS = identifiers
-        this.finder = new ApiFinder(this.ENTITY_TYPE)
+
+        return this.name
     }
 
-    async find(relatedModels: string[] = []){
-        var data = {}
-
-        for (let identifier of this.IDENTIFIERS){            
-            if (this[identifier] != undefined){
-                data = await this.finder.find(
-                    this[identifier], identifier, relatedModels
-                )
-                break
-            }
+    static async find(key: string, value: any, relatedModels: string[] = []){
+        let finder = new ApiFinder(this.entity_type())
+        if (! this.IDENTIFIERS.includes(key)){
+            throw "Trying to find ApiModel by non-Identifier key " + key
         }
-        if (!data){
-            throw "Missing identifier while trying to find " + this.constructor.name
-        }
+        let data = await finder.find(key, value, relatedModels)
         
-        Object.getOwnPropertyNames(data).forEach((key) => {
+        var instance = new this;
+        
+        Object.getOwnPropertyNames(instance).forEach((key) => {
             if (data[key] != undefined){
-                this[key] = data[key]
+                instance[key] = data[key]
             }
         })
+
+        return instance
     }
+
 }

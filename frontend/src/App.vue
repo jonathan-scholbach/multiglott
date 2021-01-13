@@ -66,7 +66,6 @@ const routes = [
   {
     path: "/course/:courseSlug/lesson/:lessonSlug",
     name: "lesson",
-    props: true,
     component: LessonPage,
   },
   { 

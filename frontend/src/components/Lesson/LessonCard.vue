@@ -7,7 +7,10 @@
                     name: 'lesson',
                     params: {
                         lessonSlug: this.lesson.slug,
-                        courseSlug: this.course.slug
+                        courseSlug: this.course.slug,
+                    },
+                    props: {
+                        lesson:this.lesson
                     }
             }">{{lesson.title}}</router-link>
         </div>
@@ -15,41 +18,42 @@
             v-if="this.lesson.accomplishment !== undefined"
             class="md-col-2"
         >
-            {{lesson.accomplishment}}%
+            {{lesson.accomplishment}} %
         </div>
     </div>
 </template>
 
 <script>
+import Course from "../../models/Course"
 import Lesson from "../../models/Lesson"
+
 
 export default {
     name: "LessonCard",
-    props: ["slug", "course"],
+    props: ["slug"],
     data: function() {
         return {
-            lesson: null
+            lesson: null,
+            course: null,
         }
-
     },
     methods: {
         getLesson: async function() {
-            let lesson = new Lesson()
-            lesson.slug = this.slug
-            await lesson.find()
-            return lesson
+            this.lesson = await Lesson.find("slug", this.slug, ["course"])
+            this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
         },
+        getCourse: async function() {
+            this.course = await Course.find("id", this.lesson.course_id)
+        }
     },
     created: async function() {
-        let lesson = await this.getLesson()
-        this.lesson = lesson
-        let accomplishment = await this.lesson.getAccomplishment(this.$http)
-        this.lesson.accomplishment = accomplishment
+        await this.getLesson()
+        await this.getCourse()
     },
     computed: {
         canRead: function() {
             if (this.lesson) {
-                return this.lesson.privileges.includes("CAN_READ")
+                return this.lesson.privileges.includes(this.$privileges.CAN_READ)
             }
             return false
         }

@@ -28,7 +28,9 @@ class AccessConstricted:
         AccessConstricted.SUBCLASSES.append(cls)
 
     @classmethod
-    def get_subclass(cls, subclass_name: str) -> Optional[Type["AccessConstricted"]]:
+    def get_subclass(
+        cls, subclass_name: str
+    ) -> Optional[Type["AccessConstricted"]]:
         try:
             return next(
                 subclass

@@ -3,21 +3,30 @@ import { Vocab } from "./Vocab"
 
 
 export default class Lesson extends ApiModel  {
-    IDENTIFIERS = ["id", "slug"]
+    static IDENTIFIERS = ["id", "slug"]
 
-    id: number | undefined
-    title: string | undefined
-    slug: string | undefined
-    vocabs: Vocab[] | undefined
+    id: number | null = null;
+    title: string | null = null;
+    slug: string | null = null;
+    course_id: number | null = null;
+    vocabs: Vocab[] = [];
+    
 
     async getAccomplishment(http): number {
+        if (this.id == undefined) {
+            await this.constructor.find()
+        }
         var url = "/me/lesson/" + this.id
 
         let response = await http.get(url)
         return response.data.accomplishment
     }
 
-    async nextVocable(http) {
+    async getNextVocable(http) {
+        if (this.id == undefined) {
+            await this.constructor.find()
+        }
+
         var url = "/me/lesson/" + this.id
 
         let response = await http.get(url)
