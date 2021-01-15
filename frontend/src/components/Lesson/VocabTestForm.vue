@@ -19,10 +19,11 @@
 
                 <div class="form-group vocab-answer">
                     <input 
+                        v-on:keyup.enter="submit"
+                        ref="answer"
                         class="form-control" 
                         type="text" 
                         id="answer"
-                        ref="answer"
                         v-model="answer"
                         autocomplete="off"
                     />
@@ -31,19 +32,21 @@
                 <div class="text-right vertical-distance-buttons">
                     <button 
                         @click="revealHint"
+                        ref="hintButton"
                         class="btn btn-outline-primary" 
                         data-toggle="tooltip" 
                         data-placement="top" 
                         title='Get a hint by typing "?"'
-                        tabindex="3"
+                        tabindex=1
                     >
                         ?
                     </button>
 
                     <button
-                        v-on:click="submit"
+                        @click="submit"
+                        ref="submitButton"
                         class="btn btn-primary" 
-                        tabindex="2"
+                        tabindex=0
                     >
                         {{ buttonCaption }}
                     </button>
@@ -70,7 +73,7 @@
     </div>        
 </template>
 
-<script>
+<script lang="ts">
 export default {
     props: ["vocab"],
     data: function(){
@@ -126,6 +129,10 @@ export default {
         },
         refresh: async function(){
             Object.assign(this.$data, this.initialState())
+            this.focusOnInput()
+        },
+        focusOnInput: function(){
+            this.$refs.answer.focus()
         },
         revealHint: function() {
             this.showHint = true
@@ -171,5 +178,8 @@ export default {
             )
         },
     },
+    mounted: function(){
+        this.focusOnInput();
+    }
 }
 </script>

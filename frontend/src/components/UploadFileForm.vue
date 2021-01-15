@@ -12,7 +12,7 @@
     </form>
 </template>
 
-<script>
+<script lang="ts">
     export default {
         name: "UploadForm",
         props: ["url", "buttonCaption", "additionalData"],
@@ -30,7 +30,7 @@
                 formData.append("file", this.file)
                 
                 for (const [key, value] of Object.entries(this.additionalData)){
-                    formData.append(key, value)
+                    formData.append(key as string, value)
                 }
                 
                 this.$http.post(

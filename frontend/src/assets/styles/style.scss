@@ -70,6 +70,10 @@ body {
     background-color: transparent !important;
     border-color: $theme-color !important;
     border-width: $default-border-width;
+    color: black;
+    &:hover {
+        color:black;
+    }
 }
 
 .btn-primary {

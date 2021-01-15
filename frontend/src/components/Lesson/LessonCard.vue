@@ -26,14 +26,23 @@
             </div>
             
             <div class="text-right pull-right">
-                <span v-if="this.canEdit">⚙</span>
-                <span v-if="this.canDelete">🗑</span>
+                <router-link 
+                    :to="{
+                        name: 'editLesson',
+                        params: {
+                            id: this.lesson.id
+                        }
+                    }"
+                    v-if="this.canEdit"
+                >
+                    ⚙
+                </router-link>
             </div>     
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Course from "../../models/Course"
 import Lesson from "../../models/Lesson"
 
@@ -48,7 +57,11 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await Lesson.find("slug", this.slug, ["course"])
+            this.lesson = await Lesson.find({
+                key: "slug", 
+                value: this.slug, 
+                relatedModels: ["course"]
+            })
             this.lesson.accomplishment = await this.lesson.getAccomplishment()
         },
         getCourse: async function() {

@@ -1,7 +1,7 @@
 import { axiosInstance } from "../main";
 
 import { ApiModel }  from "./ApiModel"
-import { Vocab } from "./Vocab"
+import Vocab from "./Vocab"
 
 
 export default class Lesson extends ApiModel  {
@@ -14,9 +14,10 @@ export default class Lesson extends ApiModel  {
     vocabs: Vocab[] = [];
     accomplishment: number | null = null;
 
-    async getAccomplishment(http = axiosInstance): number {
+    async getAccomplishment(http = axiosInstance) {
         if (this.id == undefined) {
-            await this.constructor.find()
+            let result = await Lesson.find("slug", this.slug)
+            this.id = result.id
         }
         var url = "/me/lesson/" + this.id
 

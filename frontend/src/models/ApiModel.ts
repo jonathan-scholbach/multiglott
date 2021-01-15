@@ -1,27 +1,40 @@
 import { axiosInstance } from "../main";
 
 
-interface FindRequestBody{
-    entity_type: string;
-    key: string;
-    value: any;
-    related_models: string[];
+interface ApiFindMethod {
+    (
+        key: string, 
+        value: any, 
+        relatedModels: string[], 
+        endpoint: string
+    ): ApiModel;
 }
 
 
-enum Privilege{
-    CAN_READ = "CAN_READ",
-    CAN_EDIT = "CAN_EDIT",
-    CAN_DELETE = "CAN_DELETE",
+interface ApiUpdateMethod {
+    (key: string, value: any, data: object, endpoint: string): ApiModel
 }
 
+
+interface ApiModel {
+    entityType: string;
+    identifiers: string[];
+    find: ApiFindMethod;
+    update: ApiUpdateMethod;
+}
 
 class ApiFinder {
-    endpoint: string;
     entity_type: string;
+    endpoint: string;
     http: any;
+    find: any;
+    update: any;
 
-    constructor(entity_type: string, endpoint: string = "/query/", http = axiosInstance) {
+    constructor(
+        entity_type: string, 
+        endpoint: string = "/query/", 
+        http = axiosInstance
+    ) {
         this.http = http
         if (!endpoint.startsWith("/")) {
             endpoint = "/" + endpoint
@@ -33,7 +46,7 @@ class ApiFinder {
         this.entity_type = entity_type
     }
 
-    async find(key: string, value: any, relatedModels: string[] = []) {
+    find = async(key: string, value: any, relatedModels: string[] = []) => {
         let body: FindRequestBody = {
             entity_type: this.entity_type,
             key: key,
@@ -53,39 +66,75 @@ class ApiFinder {
         )
         return response.data
     }
+    
+    update = async (key: string, value: any, data: Object) => {
+        let body: PutRequestBody = {
+            entity_type: this.entity_type,
+            key: key,
+            value: value,
+            data: data
+        }
+
+        let response = await self.http.put(
+            self.endpoint,
+            body,
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+
+        return response.data
+    }
 }
 
+class ApiModel{
+    identifiers: string[];
+    finder: ApiFinder;
+    find: object;
+}
 
-export class ApiModel  {
-    static ENTITY_TYPE: string | null = null;
-    static IDENTIFIERS: string[];
+function ApiModelFactory<T>(
+    entity_type: string, 
+    identifiers: string[], 
+    model: T
+): <Model extends T>{
     
-    privileges: Privilege[] = [];
+    var self = this
+    var apiFinder = new ApiFinder(entity_type)
 
-    static entity_type(): string {
-        if (this.ENTITY_TYPE !== null) {
-            return this.ENTITY_TYPE
-        }
-
-        return this.name
+    class Model implements ApiModel extends model{
+        identifiers = identifiers
+        finder = apiFinder
     }
-
-    static async find(key: string, value: any, relatedModels: string[] = []){
-        let finder = new ApiFinder(this.entity_type())
-        if (! this.IDENTIFIERS.includes(key)){
+        
+    const find = async (
+        {key, value, relatedModels}: 
+        {key: string, value: any, relatedModels: string[]
+    ) => {
+        if (!this.identifiers.includes(key){
             throw "Trying to find ApiModel by non-Identifier key " + key
         }
-        let data = await finder.find(key, value, relatedModels)
-        
-        var instance = new this;
-        
-        Object.getOwnPropertyNames(instance).forEach((key) => {
-            if (data[key] != undefined){
-                instance[key] = data[key]
-            }
-        })
+        let data = await this.finder.find(key, value, relatedModels)
+    }
+    api_model.find = find
 
-        return instance
+    const update = async (data: Object) => {
+
+        var key: string
+        var value: any
+
+        for (let idKey in this.cls().IDENTIFIERS){
+            if (this[idKey] != undefined){
+                key = idKey
+                value = this[idKey]
+                break
+            }
+        }
+        
+        let response = await finder.update(key, value, data)
+        console.log(response)
     }
 
 }

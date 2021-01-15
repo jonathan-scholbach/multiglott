@@ -39,7 +39,7 @@
     </form>
 </template>
 
-<script>    
+<script lang="ts">    
     export default {
         name: "RegisterForm",
         data: function() {

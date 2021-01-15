@@ -3,7 +3,7 @@ version: "3.9"
 services:
   api:
     build: ./api/
-    environment: 
+    environment:
       APP_NAME: ${APP_NAME}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -21,32 +21,34 @@ services:
     ports:
       - "${API_PORT}:${API_PORT}"
     depends_on:
-        - db
-  
+      - db
+
   db:
     container_name: ${POSTGRES_HOST}
     image: postgres
     restart: always
-    environment: 
+    environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: ${POSTGRES_PORT}
-    expose: 
+    expose:
       - $POSTGRES_PORT
     command: -p ${POSTGRES_PORT}
     ports:
       - $POSTGRES_PORT
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 
   frontend:
     container_name: frontend
     build: ./frontend/
     volumes:
       - ./frontend:/frontend
-      - '/frontend/node_modules'
+      - "/frontend/node_modules"
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    environment: 
+    environment:
       VUE_APP_APP_NAME: ${APP_NAME}
       VUE_APP_API_DOMAIN: ${API_DOMAIN}
       VUE_APP_API_PORT: ${API_PORT}

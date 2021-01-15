@@ -5,13 +5,15 @@
             <div 
                 class="material-card" 
                 v-for="course in this.courses" :key="course.created_at"
-            >
-                <div class="material-card-title">
-                    <router-link :to="{name: 'course', params: {'slug': course.slug}}">{{course.title}}</router-link>
-                    [{{course.source_language.name}} → {{course.target_language.name}}]
-                </div>
-                <div class="material-card-body">
-                    
+            >   
+                <div class="material-card-content">
+                    <div class="material-card-title">
+                        <router-link :to="{name: 'course', params: {'slug': course.slug}}">{{course.title}}</router-link>
+                        [{{course.source_language.name}} → {{course.target_language.name}}]
+                    </div>
+                    <div class="material-card-body">
+                        
+                    </div>
                 </div>
             </div>
 
@@ -22,7 +24,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
     name: "ProfilePage",
     data: function() {

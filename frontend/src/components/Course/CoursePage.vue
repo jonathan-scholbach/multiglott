@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import UploadFileForm from "../UploadFileForm.vue"
 import LessonCard from "../Lesson/LessonCard.vue"
 

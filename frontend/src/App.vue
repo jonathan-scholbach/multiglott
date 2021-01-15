@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import VueRouter from "vue-router"
 
 import "jquery/src/jquery.js";
@@ -28,6 +28,7 @@ import CreateCoursePage from "./components/Course/CreateCoursePage.vue"
 import HeaderNav from "./components/Pages/HeaderNav.vue"
 import HomePage from "./components/Pages/HomePage.vue"
 import LessonPage from "./components/Lesson/LessonPage.vue"
+import LessonEditPage from "./components/Lesson/LessonEditPage.vue"
 import LoginPage from "./components/Pages/LoginPage.vue"
 import ProfilePage from "./components/Pages/ProfilePage.vue"
 import RegisterPage from "./components/Pages/RegisterPage.vue"
@@ -68,6 +69,12 @@ const routes = [
     name: "lesson",
     component: LessonPage,
   },
+  {
+    path: "/lesson/:id",
+    name: "editLesson",
+    props: true,
+    component: LessonEditPage,
+  },
   { 
     path: "/logout",
     name: "logout",
@@ -97,6 +104,8 @@ export default {
           return CoursePage
         case "lesson":
           return LessonPage
+        case "editLesson":
+          return LessonEditPage
         case "createCourse":
           return CreateCoursePage
         default:

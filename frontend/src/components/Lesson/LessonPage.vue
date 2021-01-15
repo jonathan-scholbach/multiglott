@@ -38,7 +38,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import VocabTestForm from "./VocabTestForm.vue"
 import Lesson from "../../models/Lesson"
@@ -53,11 +53,16 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await Lesson.find("slug", this.lessonSlug, ["course"])
+            this.lesson = await Lesson.find({
+                key: "slug", 
+                value: this.lessonSlug, 
+                relatedModels: ["course"],
+            })
             this.lesson.accomplishment = await this.lesson.getAccomplishment()
         },
         loadVocab: async function() {
             this.currentVocab = await this.lesson.getNextVocab()
+            this.lesson.accomplishment = await this.lesson.getAccomplishment()
         }
     },
     created: async function() {
