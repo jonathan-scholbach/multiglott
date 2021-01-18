@@ -42,7 +42,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import Course from "../../models/Course"
 import Lesson from "../../models/Lesson"
 

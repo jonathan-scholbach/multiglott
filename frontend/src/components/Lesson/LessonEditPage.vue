@@ -14,8 +14,8 @@
         ></vocab-edit-form> 
     </div>
 </template>
-<script lang="ts">
-import Lesson from "../../models/Lesson"
+<script>
+import { Lesson, findLesson } from "../../models/Lesson"
 import VocabEditForm from "./VocabEditForm.vue"
 
 
@@ -28,8 +28,7 @@ export default {
     },
     methods: {
         getLesson: async function(){
-            this.lesson = await Lesson.find("id", this.lessonId, ["vocabs"])
-            console.log(this.lesson)
+            this.lesson = await findLesson("id", this.lessonId, ["vocabs"])
         }
     },
     components: {

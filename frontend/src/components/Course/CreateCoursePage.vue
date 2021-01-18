@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import CreateCourseForm from "./CreateCourseForm.vue"
 
 export default {

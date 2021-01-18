@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import LoginForm from "./LoginForm.vue"
 
 export default {

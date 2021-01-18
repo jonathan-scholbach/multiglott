@@ -4,6 +4,7 @@ import VueRouter from "vue-router"
 import BootstrapVue from "bootstrap-vue"
 
 import axios from "axios"
+import AxiosInstance from "axios"
 
 import App from "./App.vue"
 import apiSetup from "./middleware/axios"

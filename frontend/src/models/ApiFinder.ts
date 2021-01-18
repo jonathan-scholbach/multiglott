@@ -53,8 +53,8 @@ class ApiFinder {
             data: data
         }
 
-        let response = await self.http.put(
-            self.endpoint,
+        let response = await this.http.put(
+            this.endpoint,
             body,
             {
                 headers: {
@@ -67,70 +67,16 @@ class ApiFinder {
     }
 }
 
-function updateInstanceByData<Schema>(instance: Schema, data: object) {
+function updateInstanceByData<C>(instance: C, data: object): C {
     // Replace members of instance with corresponding values from data, 
     //     ignoring superfluous key-value pairs in data.
     for (let key of Object.getOwnPropertyNames(instance)){
         if (Object.keys(data).includes(key)){
-            instance[key as keyof Schema] = data[key as keyof typeof data]
+            instance[key as keyof C] = data[key as keyof typeof data]
         }    
     }
+
+    return instance
 }
 
-
-
-class BaseSchema{
-    id: string | null = null;
-}
-
-function apiModelFactory<Schema extends BaseSchema>(
-    schema: typeof Schema,
-    entityType: string,
-    identifiers: string[]
-){
-    const finder = new ApiFinder(entityType)
-
-    class Model extends schema {
-        static async find(
-            {key, value, relatedModels}: 
-            {key: string, value: any, relatedModels: string[] = []
-        ): Promise<typeof schema> {
-            if (!identifiers.includes(key){
-                throw "Trying to find ApiModel by non-Identifier key " + key
-            }
-            let data = await finder.find(key, value, relatedModels)
-
-            return Object.assign(new schema(), data)
-        }
-            
-        async update(key: string, value: any, data: Object){
-            const response = await finder.update(key, value, data)
-            updateInstanceByData(this, response)
-        }
-
-    }
-
-    return Model
-}
-
-class VocabSchema extends BaseSchema {
-    target: string | null = null;
-    source: string | null = null;
-    hint: string | null = null;
-}
-
-class LessonSchema extends BaseSchema {
-    id: string | null = null;
-    title: string | null = null;
-    slug: string | null = null;
-    course_id: number | null = null;
-    vocabs: VocabSchema[] = [];
-    accomplishment: number | null = null;
-
-}
-
-export const Lesson = new apiModelFactory(
-    LessonSchema, 
-    "Lesson", 
-    ["id", "slug"]
-)
+export { ApiFinder, updateInstanceByData }

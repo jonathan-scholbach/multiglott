@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import RegisterForm from "./RegisterForm.vue"
 
 export default {

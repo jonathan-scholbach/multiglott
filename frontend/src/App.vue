@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import VueRouter from "vue-router"
 
 import "jquery/src/jquery.js";

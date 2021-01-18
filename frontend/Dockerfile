@@ -4,7 +4,6 @@ WORKDIR /frontend
 ENV PATH /frontend/node_modules/.bin:$PATH
 
 COPY package.json /frontend/package.json
-COPY tsconfig.json /frontend/tsconfig.json
 
 RUN npm install
 COPY . .

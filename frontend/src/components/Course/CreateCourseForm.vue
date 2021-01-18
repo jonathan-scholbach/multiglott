@@ -35,7 +35,7 @@
     </form>
 </template>
 
-<script lang="ts">    
+<script>    
     export default {
         name: "CreateCourseForm",
         data: function() {
