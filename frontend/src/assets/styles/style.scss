@@ -21,6 +21,11 @@ body {
     font-family: $main-font;
 }
 
+a:hover{
+    color: $theme-color;
+    text-decoration: none;
+}
+
 .emph {
     font-style: italic;
 }
@@ -106,10 +111,11 @@ body {
 .alert-answer-correct, .alert-answer-wrong {
     font-size: 1.2*$base-size;
 }
+
 .card-header {
     background-color: $theme-color;
     color: black;
-    margin: 0 !important;
+    margin: 0 !important;   
 }
 
 .card {

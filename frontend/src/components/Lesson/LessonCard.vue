@@ -8,7 +8,7 @@
                 v-if="this.lesson.accomplishment !== undefined"
                 class="material-card-badge"
             >
-                {{accomplishment}}%
+                {{ accomplishment }}%
             </div>
             <div class="material-card-content">
                 <router-link
@@ -24,8 +24,7 @@
                         }
                 }">{{lesson.title}}</router-link>
             </div>
-            
-            <div class="text-right pull-right">
+            <div class="material-card-right">
                 <router-link 
                     :to="{
                         name: 'editLesson',
@@ -37,14 +36,14 @@
                 >
                     ⚙
                 </router-link>
-            </div>     
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import Course from "../../models/Course"
-import Lesson from "../../models/Lesson"
+import { findCourse, Course } from "../../models/Course"
+import { findLesson, Lesson } from "../../models/Lesson"
 
 export default {
     name: "LessonCard",
@@ -57,15 +56,14 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await Lesson.find({
-                key: "slug", 
-                value: this.slug, 
-                relatedModels: ["course"]
-            })
-            this.lesson.accomplishment = await this.lesson.getAccomplishment()
+            this.lesson = await findLesson(
+                this.$http, "slug",  this.slug, ["course"]
+            )
+            this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
         },
         getCourse: async function() {
-            this.course = await Course.find("id", this.lesson.course_id)
+            console.log("course.id, ", this.lesson.course_id)
+            this.course = await findCourse(this.$http, "id", this.lesson.course_id)
         }
     },
     created: async function() {

@@ -38,9 +38,10 @@ const store = new Vuex.Store({
   },
   mutations: {
     initialiseStore(state) {
-      if(localStorage.getItem("store")) {
+      const store = localStorage.getItem("store")
+      if(store) {
         this.replaceState(
-          Object.assign(state, JSON.parse(localStorage.getItem("store")))
+          Object.assign(state, JSON.parse(store))
         );
       }
       this.subscribe((mutation, state) => {

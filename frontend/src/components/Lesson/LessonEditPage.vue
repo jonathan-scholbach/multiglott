@@ -16,6 +16,7 @@
 </template>
 <script>
 import { Lesson, findLesson } from "../../models/Lesson"
+import { Vocab } from "../../models/Vocab"
 import VocabEditForm from "./VocabEditForm.vue"
 
 
@@ -28,7 +29,12 @@ export default {
     },
     methods: {
         getLesson: async function(){
-            this.lesson = await findLesson("id", this.lessonId, ["vocabs"])
+            this.lesson = await findLesson(
+                this.$http, 
+                "id", 
+                this.lessonId, 
+                ["vocabs"]
+            )
         }
     },
     components: {

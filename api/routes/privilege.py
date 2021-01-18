@@ -22,7 +22,7 @@ def user_privileges(
     user: Optional["User"] = Depends(get_verified_user_or_none),
     db: "Session" = Depends(get_db),
 ):
-    entity_class = AccessConstricted.get_subclass(subclass=entity_type)
+    entity_class = AccessConstricted.get_subclass(subclass_name=entity_type)
 
     if not entity_class:
         raise HTTPException(

@@ -44,7 +44,7 @@
 import UploadFileForm from "../UploadFileForm.vue"
 import LessonCard from "../Lesson/LessonCard.vue"
 
-import Course from "../../models/Course"
+import { findCourse, Course } from "../../models/Course"
 
 
 export default {
@@ -73,8 +73,8 @@ export default {
             })
         },
         getCourse: async function() {
-            let course = await Course.find(
-                "slug", this.$route.params.slug, ["lessons"]
+            let course = await findCourse(
+                this.$http, "slug", this.$route.params.slug, ["lessons"]
             )
             return course
         },

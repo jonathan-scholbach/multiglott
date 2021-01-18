@@ -41,7 +41,7 @@
 <script>
 
 import VocabTestForm from "./VocabTestForm.vue"
-import Lesson from "../../models/Lesson"
+import { findLesson, Lesson } from "../../models/Lesson"
 
 export default {
     name: "LessonPage",
@@ -53,12 +53,12 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await findLesson("slug", this.lessonSlug, ["course"])
-            this.lesson.accomplishment = await this.lesson.getAccomplishment()
+            this.lesson = await findLesson(this.$http, "slug", this.lessonSlug, ["course"])
+            this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
         },
         loadVocab: async function() {
-            this.currentVocab = await this.lesson.getNextVocab()
-            this.lesson.accomplishment = await this.lesson.getAccomplishment()
+            this.currentVocab = await this.lesson.getNextVocab(this.$http)
+            this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
         }
     },
     created: async function() {

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import Depends
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Session, relationship
@@ -6,9 +8,10 @@ from sqlalchemy.types import ARRAY
 from database import Base
 from models.db_model import DBModel
 from models.user_vocab_progress import UserVocabProgress
+from privileges import AccessConstricted
 
 
-class Vocab(DBModel, Base):
+class Vocab(DBModel, Base, AccessConstricted):
     target = Column(ARRAY(String))
     source = Column(ARRAY(String))
     hint = Column(String, nullable=True, default=None)
@@ -21,3 +24,6 @@ class Vocab(DBModel, Base):
         secondary=UserVocabProgress.__table__,
         back_populates="vocabs",
     )
+
+    def access_privileges(self, db: Session, user: Optional["User"]):
+        return self.lesson.access_privileges(db=db, user=user)

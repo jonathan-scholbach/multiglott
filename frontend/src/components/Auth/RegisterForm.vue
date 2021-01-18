@@ -39,7 +39,9 @@
     </form>
 </template>
 
-<script>    
+<script>
+    import { validatePassword } from "./authUtils"
+
     export default {
         name: "RegisterForm",
         data: function() {
@@ -54,21 +56,19 @@
         methods: {
             submit: function () {
                 this.errors = [];
+                
                 if (!this.name) {
                     this.errors.push("Name required.");
                 }
                 if (!this.email) {
                     this.errors.push("Email required.");
                 }
-                if (!this.password) {
-                    this.errors.push("Password required.");
-                }
-                if (!this.repeatPassword) {
-                    this.errors.push("Repeated password required.");
-                }
-                if (this.password != this.repeatPassword) {
-                    this.errors.push("Passwords don't match.")
-                }
+
+                const validationErrors = validatePassword(
+                    this.password, this.repeatPassword, this.name
+                )
+
+                this.errors = this.errors.concat(validationErrors)
 
                 if (!this.errors.length){
                     this.$http.post(
@@ -83,12 +83,11 @@
                                 "Content-Type": "plain/text ",
                             }
                         }
+                    ).then(
+                        this.$router.push("/")
                     ).catch((error) => {
                         this.errors.push(error.response.data.detail)
                     })
-                } else {
-                    this.$router.push("/")
-                    
                 }
             }
         }

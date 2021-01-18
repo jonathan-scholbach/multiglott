@@ -61,21 +61,23 @@
 </template>
 
 <script>
+import Vocab from "../../models/Vocab"
+
 export default {
     props: ["vocab"],
     data: function(){
         return {
-            source: this.vocab.source,
-            target: this.vocab.target,
+            delimiter: " | ",
+            source: this.vocab.source.join(" | "),
+            target: this.vocab.target.join(" | "),
             hint: this.vocab.hint,
-            proceeding: false,
         }
     },
     computed: {
         hasChanges: function() {
             return [
-                this.vocab.target != this.target,
-                this.vocab.source != this.source,
+                this.vocab.target.join(this.delimiter) != this.target,
+                this.vocab.source.join(this.delimiter) != this.source,
                 this.vocab.hint != this.hint,
             ].some(Boolean)
         },
@@ -85,14 +87,17 @@ export default {
     },
     methods: {
         submit: async function(){
-            // this.proceeding = true
-            // this.vocab = await this.vocab.update({
-            //         target: this.target,
-            //         source: this.source,
-            //         hint: this.hint
-            // })
-            // this.proceeding = false
-            console.log(this.vocab)
+            const targetUpdate = this.target.split(this.delimiter)
+            const sourceUpdate = this.source.split(this.delimiter)
+            console.log(targetUpdate, sourceUpdate)
+
+            let model = new Vocab(
+                this.vocab.id, 
+                sourceUpdate, 
+                targetUpdate, 
+                this.hint
+            )
+            this.vocab = await model.update(this.$http)
         }
     }
 }

@@ -29,9 +29,9 @@ import HeaderNav from "./components/Pages/HeaderNav.vue"
 import HomePage from "./components/Pages/HomePage.vue"
 import LessonPage from "./components/Lesson/LessonPage.vue"
 import LessonEditPage from "./components/Lesson/LessonEditPage.vue"
-import LoginPage from "./components/Pages/LoginPage.vue"
+import LoginPage from "./components/Auth/LoginPage.vue"
 import ProfilePage from "./components/Pages/ProfilePage.vue"
-import RegisterPage from "./components/Pages/RegisterPage.vue"
+import RegisterPage from "./components/Auth/RegisterPage.vue"
 
 
 const routes = [
