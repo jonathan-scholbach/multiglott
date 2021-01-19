@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   api:
-    build: ./api/
+    build: ./server/
     environment:
       APP_NAME: ${APP_NAME}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -17,7 +17,7 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD}
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      - ./api:/api
+      - ./server:/server
     ports:
       - "${API_PORT}:${API_PORT}"
     depends_on:
@@ -40,12 +40,12 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
-  frontend:
-    container_name: frontend
-    build: ./frontend/
+  client:
+    container_name: client
+    build: ./client/
     volumes:
-      - ./frontend:/frontend
-      - "/frontend/node_modules"
+      - ./client:/client
+      - "/client/node_modules"
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     environment:
