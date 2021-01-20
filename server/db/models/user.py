@@ -25,7 +25,6 @@ from mail import send_mail
 from schemas.user import UserBase
 
 
-
 class User(DBModel, Base):
     name = Column(String, unique=True)
     email = Column(String, unique=True)
