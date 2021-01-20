@@ -5,9 +5,9 @@ from typing import Any, List, Optional, TypeVar
 from fastapi import APIRouter, Body, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from database import get_db
+from db.database import get_db
 from middleware.auth import get_verified_user_or_none
-from models.db_model import DBModel
+from db.models.db_model import DBModel
 from privileges import AccessConstricted
 
 

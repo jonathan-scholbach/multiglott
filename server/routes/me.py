@@ -6,8 +6,8 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from pydantic import Field
 from sqlalchemy.orm import Session
 
-from database import get_db
-from models import Lesson, User
+from db.database import get_db
+from db.models import Lesson, User
 from schemas import (
     UserBase,
     Course as CourseSchema,
@@ -17,7 +17,7 @@ from schemas import (
     VocabSchema,
 )
 from middleware.auth import get_verified_user
-from models.user_vocab_progress import UserVocabProgress
+from db.models.user_vocab_progress import UserVocabProgress
 
 
 me_routes = APIRouter(prefix="/me")

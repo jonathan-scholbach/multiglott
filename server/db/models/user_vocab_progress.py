@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 
-from database import Base
-from models.db_model import DBModel
+from db.database import Base
+from db.models.db_model import DBModel
 
 
 class UserVocabProgress(DBModel, Base):

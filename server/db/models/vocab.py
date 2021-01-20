@@ -5,9 +5,9 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Session, relationship
 from sqlalchemy.types import ARRAY
 
-from database import Base
-from models.db_model import DBModel
-from models.user_vocab_progress import UserVocabProgress
+from db.database import Base
+from db.models.db_model import DBModel
+from db.models.user_vocab_progress import UserVocabProgress
 from privileges import AccessConstricted
 
 

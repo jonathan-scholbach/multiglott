@@ -19,14 +19,14 @@
 
         <div class="text-right">
         <b-button 
-            v-if="this.allowEdit" 
+            v-if="this.canEdit" 
             v-b-toggle.add-lesson variant="primary"
         >
             Add Lesson
         </b-button>
         </div>
         <b-collapse id="add-lesson">
-            <div v-if="this.allowEdit" class="material-card">
+            <div v-if="this.canEdit" class="material-card">
                 <upload-file-form 
                     url='/lessons/'
                     buttonCaption="Add New Lesson"
@@ -57,36 +57,41 @@ export default {
         }
     },
     created: async function() {
-        let course = await this.getCourse()
-        this.course = course
-        this.getUser()
+        this.user = await this.getUser()
+        this.course = await this.getCourse()
     },
     methods: {
-        getUser: function() {
-            var self = this
-            this.$http.get(
-                "/me"
-            ).then((response) => {
-                self.user = response.data
-            }).catch((error) => {
-                console.log(error)
-            })
+        getUser: async function() {
+            let user = null
+            try {
+                user = await this.$http.get("/me").data
+            } catch (error) {
+                console.log("No authenticated user.")
+            }
+            return user
         },
         getCourse: async function() {
-            let course = await findCourse(
-                this.$http, "slug", this.$route.params.slug, ["lessons"]
-            )
+            let course = null
+            try {
+                course = await findCourse(
+                    this.$http, "slug", this.$route.params.slug, ["lessons"]
+                )
+            } catch (error) {
+                console.log(error)
+            }
+
             return course
         },
     },
     computed: {
-        allowEdit: function() {
-            try {
-                return this.course.author_id == this.user.id
-            }
-            catch{
-                return false
-            }
+        canRead: function() {
+            return this.course.privileges.includes(this.$privileges.CAN_READ)
+        },
+        canEdit: function() {
+            return this.course.privileges.includes(this.$privileges.CAN_EDIT)
+        },
+        canDelete: function() {
+            return this.course.privileges.includes(this.$privileges.CAN_DELETE)
         }
     }
 }

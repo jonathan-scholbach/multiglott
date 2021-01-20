@@ -1,9 +1,17 @@
-/env
+.env
+
 .vscode/
 
-.env
+/env
+
+__pycache__
+
+
+postgres-data/
 
 frontend/node_modules/
 frontend/dist
+
+
 
 TODO.md

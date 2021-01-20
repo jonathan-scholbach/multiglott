@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from database import get_db
+from db.database import get_db
+from db.models.user import User
 from middleware.auth import create_access_token
-from models import User
 from schemas.auth import Token
 
 

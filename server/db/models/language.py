@@ -3,8 +3,8 @@ from typing import Any
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship, Session
 
-from database import Base
-from models.db_model import DBModel
+from db.database import Base
+from db.models.db_model import DBModel
 
 
 class Language(DBModel, Base):

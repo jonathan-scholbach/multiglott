@@ -12,18 +12,18 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, relationship
 
 from config import config
-from database import Base
-from mail import send_mail
-from main import get_db
 
-from models.db_model import DBModel
-from models.lesson import Lesson
-from models.user_vocab_progress import UserVocabProgress
-from models.vocab import Vocab
+from ..database import Base, get_db
+
+from .db_model import DBModel
+from .lesson import Lesson
+from .user_vocab_progress import UserVocabProgress
+from .vocab import Vocab
+
+from mail import send_mail
 
 from schemas.user import UserBase
 
-from database import get_db
 
 
 class User(DBModel, Base):

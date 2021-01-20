@@ -7,7 +7,7 @@ from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declared_attr
 
-from database import get_db
+from db.database import get_db
 
 
 Class = TypeVar("Class")

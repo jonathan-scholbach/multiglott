@@ -1,10 +1,15 @@
 import os
+from os.path import abspath, dirname
+import sys
+
+sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from config import config
+from server.config import config
+
 
 Base = declarative_base()
 

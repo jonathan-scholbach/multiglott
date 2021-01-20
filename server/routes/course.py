@@ -4,9 +4,9 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from database import get_db
+from db.database import get_db
+from db.models import Course, User, Language, Lesson
 from middleware.auth import get_verified_user
-from models import Course, User, Language, Lesson
 from schemas.course import CourseCreate, CourseSubmit, Course as CourseSchema
 from schemas.lesson import Lesson as LessonSchema
 from utils.string_utils import slug_from_title

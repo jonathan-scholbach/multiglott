@@ -12,8 +12,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from config import config
-from database import get_db
-from models.user import User
+from db.database import get_db
+from db.models.user import User
 from schemas.auth import Token, TokenData
 
 

@@ -13,8 +13,8 @@ from fastapi import (
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from database import get_db
-from models import Course, Lesson, User
+from db.database import get_db
+from db.models import Course, Lesson, User
 from schemas.lesson import Lesson as LessonSchema
 from middleware.auth import get_verified_user
 

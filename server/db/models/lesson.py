@@ -7,9 +7,9 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, Session
 
 from config import config
-from database import Base
-from models.db_model import DBModel
-from models.vocab import Vocab
+from db.database import Base
+from db.models.db_model import DBModel
+from db.models.vocab import Vocab
 from privileges import Privilege, AccessConstricted
 from utils.string_utils import slug_from_title
 

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
-from database import get_db, engine, Base
+from db.database import get_db, engine, Base
 from routes import v1_routes
 
 
@@ -18,7 +18,3 @@ app.add_middleware(
 )
 
 app.include_router(v1_routes)
-
-from models import User, Course, Language
-
-Base.metadata.create_all(bind=engine)

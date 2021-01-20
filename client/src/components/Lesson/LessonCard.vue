@@ -5,7 +5,7 @@
             class="material-card row"
         >      
             <div  
-                v-if="this.lesson.accomplishment !== undefined"
+                v-if="this.lesson.accomplishment"
                 class="material-card-badge"
             >
                 {{ accomplishment }}%
@@ -56,14 +56,29 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await findLesson(
-                this.$http, "slug",  this.slug, ["course"]
-            )
-            this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
+            try{
+                this.lesson = await findLesson(
+                    this.$http, "slug",  this.slug, ["course"]
+                )
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                this.lesson.accomplishment = await this.lesson.getAccomplishment(
+                    this.$http
+                )
+            } catch(error) {
+                console.log("getAccomplishment Error")
+                console.log(error)
+            }
         },
         getCourse: async function() {
             console.log("course.id, ", this.lesson.course_id)
-            this.course = await findCourse(this.$http, "id", this.lesson.course_id)
+            this.course = await findCourse(
+                this.$http, 
+                "id", 
+                this.lesson.course_id
+            )
         }
     },
     created: async function() {

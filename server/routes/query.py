@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from database import get_db
+from db.database import get_db
 from middleware.auth import get_verified_user_or_none
 from privileges import AccessConstricted, Privilege
 
