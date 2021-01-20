@@ -3,7 +3,7 @@
         <div 
             v-if="this.lesson"
             class="material-card row"
-        >      
+        >
             <div  
                 v-if="this.lesson.accomplishment"
                 class="material-card-badge"

@@ -27,14 +27,15 @@
         </div>
         <b-collapse id="add-lesson">
             <div v-if="this.canEdit" class="material-card">
-                <upload-file-form 
-                    url='/lessons/'
-                    buttonCaption="Add New Lesson"
-                    v-bind:additionalData="{
-                        course_id: course.id
-                    }"
-                ></upload-file-form>
-                    
+                <div class="material-card-content">
+                    <upload-file-form 
+                        url='/lessons/'
+                        buttonCaption="Add New Lesson"
+                        v-bind:additionalData="{
+                            course_id: course.id
+                        }"
+                    ></upload-file-form>
+                </div>    
             </div>
         </b-collapse>    
     </div>
