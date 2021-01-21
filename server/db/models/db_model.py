@@ -1,13 +1,15 @@
 from contextlib import suppress
 from datetime import datetime
-from typing import Any, Iterable, Optional, TypeVar
+from typing import Any, Dict, Iterable, Optional, TypeVar
 
 from fastapi import Depends
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declared_attr
 
 from db.database import get_db
+from utils.class_utils import properties
 
 
 Class = TypeVar("Class")
@@ -61,13 +63,27 @@ class DBModel:
         db.commit()
 
     def update(self, db: Session, **kwargs) -> "User":
-        for key, val in kwargs.items():
-            with suppress(AttributeError):
-                setattr(self, key, val)
+        id = self.id
 
-        self.updated_at = datetime.now()
+        for key, value in kwargs.items():
+            with suppress(AttributeError):
+                setattr(self, key, value)
 
         db.add(self)
         db.commit()
 
-        return self
+    def serialized(self):
+        """JSON-compatible dict of public attributes and properties."""
+        dictionary = jsonable_encoder(self)
+        dictionary.update(
+            {
+                prop: jsonable_encoder(getattr(self, prop))
+                for prop in properties(self.__class__)
+            }
+        )
+
+        return {
+            key: value
+            for key, value in dictionary.items()
+            if not key.startswith("_")
+        }

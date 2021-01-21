@@ -32,7 +32,7 @@ import LessonEditPage from "./components/Lesson/LessonEditPage.vue"
 import LoginPage from "./components/Auth/LoginPage.vue"
 import ProfilePage from "./components/Pages/ProfilePage.vue"
 import RegisterPage from "./components/Auth/RegisterPage.vue"
-
+import SuccessfullyRegisteredPage from "./components/Auth/SuccessfullyRegisteredPage.vue"
 
 const routes = [
   { 
@@ -49,6 +49,11 @@ const routes = [
     path: "/register", 
     name: "register",
     component: RegisterPage,
+  },
+  { 
+    path: "/registered", 
+    name: "registered",
+    component: SuccessfullyRegisteredPage,
   },
   { 
     path: "/profile", 
@@ -88,6 +93,17 @@ const router = new VueRouter({
 export default {
   name: "App",
   router: router,
+  head: {
+    title () {
+      return {
+        inner: multiglott
+      }
+    },
+    meta: [
+      // creates a meta description tag in header.
+      { name: 'description', content: 'My description' }
+    ]
+  },
   computed: {
     "currentPage": function() {
       switch(this.$route.name) {
@@ -95,6 +111,8 @@ export default {
           return LoginPage
         case "register":
           return RegisterPage
+        case "registered":
+          return SuccessfullyRegisteredPage
         case "logout":
           this.$store.commit("removeToken")
           return HomePage

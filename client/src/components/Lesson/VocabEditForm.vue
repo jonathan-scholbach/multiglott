@@ -10,7 +10,6 @@
                 <div class="col-sm-10">
                     <input 
                         ref="source"
-                        id="source"
                         type="text" 
                         class="form-control"
                         v-model="source"
@@ -26,7 +25,6 @@
                     <input 
                         ref="target" 
                         type="text" 
-                        id="target"
                         class="form-control"
                         v-model="target"
                     >
@@ -40,7 +38,6 @@
                 <div class="col-sm-10">
                     <input 
                         ref="hint"
-                        id="hint"
                         type="text"
                         class="form-control"
                         v-model="hint"
@@ -89,8 +86,7 @@ export default {
         submit: async function(){
             const targetUpdate = this.target.split(this.delimiter)
             const sourceUpdate = this.source.split(this.delimiter)
-            console.log(targetUpdate, sourceUpdate)
-
+            
             let model = new Vocab(
                 this.vocab.id, 
                 sourceUpdate, 

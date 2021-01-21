@@ -9,12 +9,19 @@
             </div>
         </div>
         
-        <lesson-card
-            v-for="lesson in this.course.lessons" :key="lesson.title"
-            v-bind:slug="lesson.slug"
-            v-bind:courseSlug="course.slug"
+        <draggable 
+            v-model="lessons" 
+            @start="drag=true" 
+            @end="drag=false"
+            @change="updateLessonsOrder"
         >
-        </lesson-card>
+            <lesson-card
+                v-for="lesson in this.lessons" :key="lesson.title"
+                v-bind:slug="lesson.slug"
+                v-bind:courseSlug="course.slug"
+            >
+            </lesson-card>
+        </draggable>
  
 
         <div class="text-right">
@@ -29,7 +36,8 @@
             <div v-if="this.canEdit" class="material-card">
                 <div class="material-card-content">
                     <upload-file-form 
-                        url='/lessons/'
+                        @uploaded="refresh"
+                        url="/lessons/"
                         buttonCaption="Add New Lesson"
                         v-bind:additionalData="{
                             course_id: course.id
@@ -42,26 +50,33 @@
 </template>
 
 <script>
+import draggable from "vuedraggable"
+
 import UploadFileForm from "../UploadFileForm.vue"
 import LessonCard from "../Lesson/LessonCard.vue"
 
-import { findCourse, Course } from "../../models/Course"
-
+import Course from "../../models/Course"
+import { findApiModel, updateInstanceByData } from "../../models/ApiModel"
 
 export default {
-  components: { UploadFileForm, LessonCard },
+  components: { draggable, UploadFileForm, LessonCard },
     name: "CoursePage",
     data: function() {
         return {
             course: null,
             user: {},
+            lessons: [],
         }
     },
     created: async function() {
         this.user = await this.getUser()
-        this.course = await this.getCourse()
+        this.refresh()
     },
     methods: {
+        refresh: async function(){
+            this.course = await this.getCourse()
+            this.lessons = this.course.lessons
+        },
         getUser: async function() {
             let user = null
             try {
@@ -74,15 +89,20 @@ export default {
         getCourse: async function() {
             let course = null
             try {
-                course = await findCourse(
-                    this.$http, "slug", this.$route.params.slug, ["lessons"]
+                course = await findApiModel(
+                    this.$http, Course, "slug", this.$route.params.slug, ["lessons"]
                 )
             } catch (error) {
                 console.log(error)
             }
-
             return course
         },
+        updateLessonsOrder: async function(){
+            this.course.lesson_order = this.lessons.map((lesson) => lesson["id"])
+            let course = JSON.parse(JSON.stringify(this.course))
+            course = updateInstanceByData(new Course(), course)
+            this.course = await course.update(this.$http)
+        }
     },
     computed: {
         canRead: function() {

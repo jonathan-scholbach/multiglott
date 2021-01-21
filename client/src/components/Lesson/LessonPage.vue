@@ -4,12 +4,8 @@
         class="page-body"
     >
         <div class="material-card title-card">
-            <div 
-                v-if="this.lesson.accomplishment !== undefined"
-                class="material-card-badge"
-            >
-                {{Math.round(lesson.accomplishment * 100)}}%
-            </div>
+            <accomplishment-badge :accomplishment="this.lesson.accomplishment">
+            </accomplishment-badge>
             <div class="material-card-content">
                 <div class="row">
                     <div class="col-md-6">
@@ -41,7 +37,9 @@
 <script>
 
 import VocabTestForm from "./VocabTestForm.vue"
-import { findLesson, Lesson } from "../../models/Lesson"
+import Lesson from "../../models/Lesson"
+import AccomplishmentBadge from './AccomplishmentBadge.vue'
+import { findApiModel } from '../../models/ApiModel'
 
 export default {
     name: "LessonPage",
@@ -53,7 +51,7 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            this.lesson = await findLesson(this.$http, "slug", this.lessonSlug, ["course"])
+            this.lesson = await findApiModel(this.$http, Lesson, "slug", this.lessonSlug, ["course"])
             this.lesson.accomplishment = await this.lesson.getAccomplishment(this.$http)
         },
         loadVocab: async function() {
@@ -74,7 +72,8 @@ export default {
         }
     },
     components: {
-        VocabTestForm
+        VocabTestForm,
+        AccomplishmentBadge
     }
 }
 </script>

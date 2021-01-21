@@ -1,7 +1,7 @@
-import { ApiFinder, updateInstanceByData } from "./ApiFinder"
+import { ApiModel, ApiConnector, updateInstanceByData } from "./ApiModel"
 
 
-export default class Vocab {
+export default class Vocab extends ApiModel {
     static IDENTIFIERS = ["id"];
     
     id = null;
@@ -11,32 +11,18 @@ export default class Vocab {
     privileges = [];
 
     constructor(id=null, source, target, hint, privileges = []){
+        super()
+
         this.id = id
         this.source = source
         this.target = target
         this.hint = hint
         this.privileges = privileges
     }
-
-    async update(http) {
-        const finder = new ApiFinder("Vocab", http)
-        
-        let response = await finder.update(
-            "id",
-            this.id,
-            {
-                target: this.target,
-                source: this.source,
-                hint: this.hint,
-            }
-        )
-        console.log("response ", response.target)
-        return response
-    }
 }
 
 export async function findVocab(http, key, value, relatedModels = []) {
-    const finder = new ApiFinder("Vocab", http)
+    const finder = new ApiConnector("Vocab", http)
 
     if (!Vocab.IDENTIFIERS.includes(key)) {
         throw "Trying to find Vocab by non-Identifier key " + key

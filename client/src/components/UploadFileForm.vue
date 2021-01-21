@@ -36,15 +36,14 @@
                 this.$http.post(
                     this.url,
                     formData,
-                    { 
+                    {
                         headers: {
                             'Content-Type': 'multipart/form-data'       
                         }
                     }
                 ).then((response) => {
-                    if (response.status == 200) {
-                        console.log(response)
-                    }
+                    this.$emit("uploaded", response)
+
                 }).catch(
                     (error) => {
                         console.log(error)

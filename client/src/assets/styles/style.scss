@@ -5,7 +5,7 @@ $theme-color: #ee4488;
 $theme-secondary-color:#7bdd55;
 $theme-tertiary-color:  #007bff;
 $theme-background-color: #fff;
-$theme-disabled-color: #666;
+$theme-disabled-color: #999;
 
 $theme-success-color: $theme-color;
 $theme-danger-color: #ff0000;
@@ -16,6 +16,13 @@ $primary: $theme-color;
 $default-page-width: 800px;
 $default-border-width: 1px;
 $default-border-radius: 0px;
+
+:export {
+    themeColor: $theme-color;
+    themeSecondaryColor: $theme-secondary-color;
+    themeTertiaryColor: $theme-tertiary-color;
+    themeDisabledColor: $theme-disabled-color;
+}
 
 body {
     font-family: $main-font;
@@ -138,8 +145,10 @@ a:hover{
     color: $theme-background-color;
 }
 
+$material-card-content-padding: $base-size;
+
 .material-card-content {
-    padding: $base-size;
+    padding: $material-card-content-padding;
     display: table-cell;
     height: 100%;
 }
@@ -148,11 +157,19 @@ a:hover{
     background-color: $theme-tertiary-color;
     color: $theme-background-color;
     display: table-cell;
-    width: 4*$base-size;
-    font-size: 1.2*$base-size;
+    width: 4 * $base-size;
+    font-size: 1.2 * $base-size;
     text-align: center;
     font-weight: bold;
     vertical-align: middle;
+}
+
+.material-card-right{
+    padding-right: $material-card-content-padding;
+    display: table-cell;
+    font-size: 1.2 * $base-size;
+    vertical-align: middle;
+    text-align: right;
 }
 
 $vocab-card-fontsize: 2*$base-size;

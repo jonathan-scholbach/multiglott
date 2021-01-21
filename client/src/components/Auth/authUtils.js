@@ -16,7 +16,6 @@ function hasCharacter(text, charArray) {
 }
 
 export function validatePassword(password, repeatedPassword, userName) {
-    console.log("INSIDE")
     let errors = []
 
     if (!password) {

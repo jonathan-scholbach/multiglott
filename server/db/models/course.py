@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, Session
+from sqlalchemy.types import ARRAY
 
 from db.database import Base
 from db.models.db_model import DBModel
@@ -11,6 +12,8 @@ from schemas.course import CourseCreate
 
 
 class Course(DBModel, AccessConstricted, Base):
+    PROPS_MAP = {"lesson_order": "_lesson_order"}
+
     title = Column(String, unique=True)
     slug = Column(String, unique=True)
 
@@ -29,7 +32,8 @@ class Course(DBModel, AccessConstricted, Base):
     author_id = Column(Integer, ForeignKey("user.id"))
     author = relationship("User", foreign_keys=[author_id])
 
-    lessons = relationship("Lesson")
+    _lessons = relationship("Lesson")
+    _lesson_order = Column(ARRAY(Integer), default=[])
 
     @classmethod
     def create(cls, db, course: CourseCreate, author_id: int) -> "Course":
@@ -46,6 +50,29 @@ class Course(DBModel, AccessConstricted, Base):
         db.refresh(db_course)
 
         return db_course
+
+    @property
+    def lesson_order(self):
+        if not self._lesson_order:
+            return [lesson.id for lesson in self._lessons]
+        else:
+            missing_lesson_ids = [
+                lesson.id
+                for lesson in self._lessons
+                if lesson.id not in self._lesson_order
+            ]
+
+            return self._lesson_order + missing_lesson_ids
+
+    @property
+    def lessons(self):
+        return sorted(
+            self._lessons, key=lambda lesson: self.lesson_order.index(lesson.id)
+        )
+
+    @lessons.setter
+    def set_lessons(self, value: List[int]) -> None:
+        self._lessons = value
 
     def access_privileges(
         self, db: Session, user: Optional["User"] = None

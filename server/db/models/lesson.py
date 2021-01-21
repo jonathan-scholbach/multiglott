@@ -20,7 +20,6 @@ class Lesson(DBModel, Base, AccessConstricted):
 
     course_id = Column(Integer, ForeignKey("course.id"))
     course = relationship("Course", foreign_keys=[course_id])
-
     vocabs = relationship("Vocab")
 
     @classmethod

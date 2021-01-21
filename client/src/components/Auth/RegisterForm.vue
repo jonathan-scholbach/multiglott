@@ -84,9 +84,8 @@
                             }
                         }
                     ).then(
-                        this.$router.push("/")
+                        this.$router.push({name: "registered"})
                     ).catch((error) => {
-                        console.log("error")
                         this.errors.push(error.response.data.detail)
                     })
                 }

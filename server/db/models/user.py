@@ -137,7 +137,7 @@ class User(DBModel, Base):
             ),
         )
 
-    def _raw_progresss(
+    def _raw_progress(
         self,
         db: Session,
         vocab_id: int,
@@ -161,7 +161,7 @@ class User(DBModel, Base):
         vocab_id: int,
         lookback: int = config["LOOKBACK"],
     ) -> float:
-        raw_progress = self._raw_progresss(
+        raw_progress = self._raw_progress(
             db=db, vocab_id=vocab_id, lookback=lookback
         )
         if not raw_progress:

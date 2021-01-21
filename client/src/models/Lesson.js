@@ -1,6 +1,8 @@
-import { ApiFinder, updateInstanceByData } from "./ApiFinder"
+import { findApiModel } from "./ApiModel";
+import { ApiModel } from "./ApiModel"
 
-class Lesson {
+
+export default class Lesson extends ApiModel {
     static IDENTIFIERS = ["id", "slug"]
 
     id = null;
@@ -11,9 +13,29 @@ class Lesson {
     accomplishment = null;
     privileges = [];
 
+    constructor(
+        id=null, 
+        title, 
+        slug, 
+        course_id, 
+        vocabs = [], 
+        accomplishment = null, 
+        privileges = []
+    ){
+        super()
+
+        this.id = id
+        this.title = title
+        this.slug = slug
+        this.course_id = course_id
+        this.vocabs = vocabs 
+        this.accomplishment = accomplishment
+        this.privileges = privileges
+    }
+
     async getAccomplishment(http) {
         if (this.id == undefined) {
-            let result = await findLesson("slug", this.slug)
+            let result = await findApiModel("slug", Lesson, this.slug)
             this.id = result.id
         }
         var url = "/me/lesson/" + this.id
@@ -29,16 +51,3 @@ class Lesson {
         return response.data.vocab
     }
 }
-
-async function findLesson(http, key, value, relatedModels = []) {
-    const finder = new ApiFinder("Lesson", http)
-
-    if (!Lesson.IDENTIFIERS.includes(key)){
-        throw "Trying to find ApiModel by non-Identifier key " + key
-    }
-    const data = await finder.find(key, value, relatedModels)
-
-    return updateInstanceByData(new Lesson(), data)
-}
-
-export { Lesson, findLesson }

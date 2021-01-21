@@ -16,7 +16,6 @@ query_route = APIRouter(
 
 def get_entity(entity_type: str, key: str, value: Any, db: Session):
     entity_class = AccessConstricted.get_subclass(subclass_name=entity_type)
-    print(entity_type)
     if not entity_class:
         raise HTTPException(
             status_code=400,
@@ -43,7 +42,8 @@ def find_entity(
     db: Session = Depends(get_db),
 ):
     entity = get_entity(entity_type=entity_type, key=key, value=value, db=db)
-    serialized_entity = jsonable_encoder(entity)
+    serialized_entity = entity.serialized()
+
     serialized_related_models = {
         related_model: getattr(entity, related_model)
         for related_model in related_models
@@ -70,18 +70,15 @@ def update_entity(
     user: Optional["User"] = Depends(get_verified_user_or_none),
     db: Session = Depends(get_db),
 ):
-    print("HERE")
     entity = get_entity(entity_type=entity_type, key=key, value=value, db=db)
-    print(entity)
+
     if not Privilege.CAN_EDIT in entity.access_privileges(db=db, user=user):
         raise HTTPException(
             status_code=401, detail="User lacks privilege to edit this entity."
         )
 
-    for updated_key, updated_value in data.items():
-        setattr(entity, updated_key, updated_value)
+    entity.update(db=db, **data)
 
-    db.add(entity)
-    db.commit()
-
-    return entity
+    return jsonable_encoder(
+        get_entity(entity_type=entity_type, key="id", value=entity.id, db=db)
+    )

@@ -4,12 +4,11 @@
             v-if="this.lesson"
             class="material-card row"
         >
-            <div  
-                v-if="this.lesson.accomplishment"
+            <accomplishment-badge 
+                v-if="this.lesson.accomplishment !== undefined"
+                v-bind:accomplishment="this.accomplishment"
                 class="material-card-badge"
-            >
-                {{ accomplishment }}%
-            </div>
+            ></accomplishment-badge>
             <div class="material-card-content">
                 <router-link
                     v-if="this.course && this.canRead"
@@ -42,8 +41,12 @@
 </template>
 
 <script>
-import { findCourse, Course } from "../../models/Course"
-import { findLesson, Lesson } from "../../models/Lesson"
+import Course from "../../models/Course"
+import Lesson from "../../models/Lesson"
+import { findApiModel } from "../../models/ApiModel"
+
+import AccomplishmentBadge from "./AccomplishmentBadge"
+
 
 export default {
     name: "LessonCard",
@@ -57,8 +60,8 @@ export default {
     methods: {
         getLesson: async function() {
             try{
-                this.lesson = await findLesson(
-                    this.$http, "slug",  this.slug, ["course"]
+                this.lesson = await findApiModel(
+                    this.$http, Lesson, "slug",  this.slug, ["course"]
                 )
             } catch (error) {
                 console.log(error)
@@ -73,9 +76,9 @@ export default {
             }
         },
         getCourse: async function() {
-            console.log("course.id, ", this.lesson.course_id)
-            this.course = await findCourse(
+            this.course = await findApiModel(
                 this.$http, 
+                Course,
                 "id", 
                 this.lesson.course_id
             )
@@ -87,7 +90,12 @@ export default {
     },
     computed: {
         accomplishment: function () {
-            return Math.round(this.lesson.accomplishment * 100)
+            if (this.lesson) {
+                if (this.lesson.accomplishment) {
+                    return this.lesson.accomplishment
+                }
+            }
+            return 0
         },
         canRead: function() {
             if (this.lesson) {
@@ -113,6 +121,9 @@ export default {
             }
             return false
         },
+    },
+    components: {
+        AccomplishmentBadge
     }
     
 }

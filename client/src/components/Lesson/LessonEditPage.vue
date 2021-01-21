@@ -5,7 +5,18 @@
     >
         <div class="material-card title-card">
             <div class="material-card-content">
-                EDIT {{ lesson.title }}
+                <input 
+                    type="text"
+                    ref="lessonTitle"
+                    id="lessonTitle"
+                    v-model="lesson.title">
+            </div>
+            <div class="material-card-right"> 
+                <button 
+                    class="btn btn-success"
+                    @click="updateLessonTitle"
+                >Update Lesson Title
+                </button>
             </div>
         </div>
         <vocab-edit-form 
@@ -15,7 +26,8 @@
     </div>
 </template>
 <script>
-import { Lesson, findLesson } from "../../models/Lesson"
+import { findApiModel } from '../../models/ApiModel'
+import Lesson from "../../models/Lesson"
 import { Vocab } from "../../models/Vocab"
 import VocabEditForm from "./VocabEditForm.vue"
 
@@ -29,12 +41,16 @@ export default {
     },
     methods: {
         getLesson: async function(){
-            this.lesson = await findLesson(
+            this.lesson = await findApiModel(
                 this.$http, 
+                Lesson,
                 "id", 
                 this.lessonId, 
                 ["vocabs"]
             )
+        },
+        updateLessonTitle: async function() {
+
         }
     },
     components: {
