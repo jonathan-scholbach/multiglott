@@ -63,8 +63,6 @@ class DBModel:
         db.commit()
 
     def update(self, db: Session, **kwargs) -> "User":
-        id = self.id
-
         for key, value in kwargs.items():
             with suppress(AttributeError):
                 setattr(self, key, value)

@@ -64,7 +64,6 @@ class Course(DBModel, AccessConstricted, Base):
 
             return self._lesson_order + missing_lesson_ids
 
-
     @lesson_order.setter
     def lesson_order(self, value: List[int]) -> None:
         self._lesson_order = value

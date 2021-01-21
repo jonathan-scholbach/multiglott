@@ -3,7 +3,7 @@ from tempfile import SpooledTemporaryFile
 from typing import List, Optional
 
 from fastapi import HTTPException
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, UnicodeText
 from sqlalchemy.orm import relationship, Session
 
 from config import config
@@ -17,9 +17,10 @@ from utils.string_utils import slug_from_title
 class Lesson(DBModel, Base, AccessConstricted):
     title = Column(String)
     slug = Column(String)
-
+    description = Column(UnicodeText, default="")
     course_id = Column(Integer, ForeignKey("course.id"))
     course = relationship("Course", foreign_keys=[course_id])
+
     vocabs = relationship("Vocab")
 
     @classmethod
