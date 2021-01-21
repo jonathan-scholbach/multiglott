@@ -64,15 +64,16 @@ class Course(DBModel, AccessConstricted, Base):
 
             return self._lesson_order + missing_lesson_ids
 
+
+    @lesson_order.setter
+    def lesson_order(self, value: List[int]) -> None:
+        self._lesson_order = value
+
     @property
     def lessons(self):
         return sorted(
             self._lessons, key=lambda lesson: self.lesson_order.index(lesson.id)
         )
-
-    @lessons.setter
-    def set_lessons(self, value: List[int]) -> None:
-        self._lessons = value
 
     def access_privileges(
         self, db: Session, user: Optional["User"] = None

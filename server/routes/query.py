@@ -43,7 +43,7 @@ def find_entity(
 ):
     entity = get_entity(entity_type=entity_type, key=key, value=value, db=db)
     serialized_entity = entity.serialized()
-
+    
     serialized_related_models = {
         related_model: getattr(entity, related_model)
         for related_model in related_models
