@@ -10,6 +10,7 @@ export default class Lesson extends ApiModel {
     slug = null;
     course_id = null;
     vocabs = [];
+    description = "";
     accomplishment = null;
     privileges = [];
 
@@ -18,7 +19,8 @@ export default class Lesson extends ApiModel {
         title, 
         slug, 
         course_id, 
-        vocabs = [], 
+        vocabs = [],
+        description = "",
         accomplishment = null, 
         privileges = []
     ){
@@ -29,6 +31,7 @@ export default class Lesson extends ApiModel {
         this.slug = slug
         this.course_id = course_id
         this.vocabs = vocabs 
+        this.description = description
         this.accomplishment = accomplishment
         this.privileges = privileges
     }

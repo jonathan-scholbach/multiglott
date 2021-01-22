@@ -6,6 +6,7 @@ from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Column, DateTime, Integer
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.relationships import RelationshipProperty
 from sqlalchemy.ext.declarative import declared_attr
 
 from db.database import get_db
@@ -64,10 +65,15 @@ class DBModel:
 
     def update(self, db: Session, **kwargs) -> "User":
         for key, value in kwargs.items():
+            try:
+                prop = getattr(self.__class__, key).property
+            except AttributeError:
+                continue
+            if key == "id" or type(prop) is RelationshipProperty:
+                continue
             with suppress(AttributeError):
                 setattr(self, key, value)
 
-        db.add(self)
         db.commit()
 
     def serialized(self):

@@ -21,6 +21,7 @@
     "css-loader": "4.3.0",
     "chroma-js":"^2.1.0",
     "jquery": "3.5.1",
+    "marked": "^1.2.7",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.1.0",
     "vue": "^2.0.0",

@@ -58,13 +58,6 @@ a:hover{
     text-align: justify;
 }
 
-.title {
-    width: 100%;
-    font-size: 2.5*$base-size;
-    color: $theme-secondary-color;
-    text-align: center;
-}
-
 .page-content{
     margin-top: 2*$base-size;
 }
@@ -141,8 +134,11 @@ a:hover{
 }
 
 .title-card{
-    background-color: $theme-color;
-    color: $theme-background-color;
+    font-size: 1.2*$base-size;
+}
+
+.title {
+    font-weight: bold;
 }
 
 $material-card-content-padding: $base-size;
@@ -167,7 +163,6 @@ $material-card-content-padding: $base-size;
 .material-card-right{
     padding-right: $material-card-content-padding;
     display: table-cell;
-    font-size: 1.2 * $base-size;
     vertical-align: middle;
     text-align: right;
 }

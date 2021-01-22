@@ -2,28 +2,43 @@
     <div 
         v-if="this.lesson !== null"
         class="page-body"
-    >
-        <div class="material-card title-card">
+    >        
+        <div class="material-card">
+            
             <accomplishment-badge :accomplishment="this.lesson.accomplishment">
             </accomplishment-badge>
-            <div class="material-card-content">
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ lesson.title }}
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <router-link 
-                            :to="{
-                                name: 'course',
-                                params: {
-                                    slug: this.courseSlug,
-                                }
-                            }"
-                        >
-                            Back To Course
-                        </router-link>
-                    </div>
-                </div>    
+            
+            <div class="material-card-content title-card">
+                <span class="title">{{ lesson.title }}</span>
+            </div>
+            
+            <div class="material-card-right">
+                <div v-if=this.lesson.description>
+                    <router-link 
+                        
+                        :to="{
+                            name: 'lessonDescription',
+                            params: {
+                                courseSlug: this.courseSlug,
+                                lessonSlug: this.lessonSlug
+                            }
+                        }"
+                    >
+                        Explanation for this Lesson
+                    </router-link>
+                </div>
+                <div>
+                    <router-link 
+                        :to="{
+                            name: 'course',
+                            params: {
+                                slug: this.courseSlug,
+                            }
+                        }"
+                    >
+                        Back To Course
+                    </router-link>
+                </div> 
             </div>
         </div>
         <vocab-test-form 

@@ -177,6 +177,9 @@ class User(DBModel, Base):
     ) -> float:
         lesson = Lesson.get(db=db, value=lesson_id)
 
+        if not lesson.vocabs:
+            return 0
+
         return sum(
             self.progress_percentage(
                 db=db, vocab_id=vocab.id, lookback=lookback

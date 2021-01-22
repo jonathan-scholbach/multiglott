@@ -29,10 +29,12 @@ import HeaderNav from "./components/Pages/HeaderNav.vue"
 import HomePage from "./components/Pages/HomePage.vue"
 import LessonPage from "./components/Lesson/LessonPage.vue"
 import LessonEditPage from "./components/Lesson/LessonEditPage.vue"
+import LessonDescriptionPage from "./components/Lesson/LessonDescriptionPage.vue"
 import LoginPage from "./components/Auth/LoginPage.vue"
 import ProfilePage from "./components/Pages/ProfilePage.vue"
 import RegisterPage from "./components/Auth/RegisterPage.vue"
 import SuccessfullyRegisteredPage from "./components/Auth/SuccessfullyRegisteredPage.vue"
+
 
 const routes = [
   { 
@@ -73,6 +75,12 @@ const routes = [
     path: "/course/:courseSlug/lesson/:lessonSlug",
     name: "lesson",
     component: LessonPage,
+  },
+  {
+    path: "/course/:courseSlug/explanation/:lessonSlug",
+    name: "lessonDescription",
+    props: true,
+    component: LessonDescriptionPage
   },
   {
     path: "/lesson/:id",
@@ -124,6 +132,8 @@ export default {
           return LessonPage
         case "editLesson":
           return LessonEditPage
+        case "lessonDescription":
+          return LessonDescriptionPage
         case "createCourse":
           return CreateCoursePage
         default:
