@@ -87,14 +87,9 @@ export default {
             return user
         },
         getCourse: async function() {
-            let course = null
-            try {
-                course = await findApiModel(
-                    this.$http, Course, "slug", this.$route.params.slug, ["lessons"]
-                )
-            } catch (error) {
-                console.log(error)
-            }
+            const course = await findApiModel(
+                this.$http, Course, "slug", this.$route.params.slug, ["lessons"]
+            )
             return course
         },
         updateLessonsOrder: async function(){

@@ -18,7 +18,11 @@ export default {
     },
     computed: {
         compiledMarkdown: function() {
-            return marked(this.rawMarkdown)
+            if (this.rawMarkdown) {
+                return marked(this.rawMarkdown)
+            } else {
+                return ""
+            }
         }
     },
 }

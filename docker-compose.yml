@@ -15,6 +15,10 @@ services:
       API_DOMAIN: ${API_DOMAIN}
       API_PORT: ${API_PORT}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      FRONTEND_CONFIRMED_PATH: ${FRONTEND_CONFIRMED_PATH}
+
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - ./server:/server
@@ -54,4 +58,5 @@ services:
       VUE_APP_API_PORT: ${API_PORT}
       VUE_APP_API_VERSION: ${API_VERSION}
       VUE_APP_FRONTEND_PORT: ${FRONTEND_PORT}
+      VUE_APP_FRONTEND_CONFIRMED_PATH: ${FRONTEND_CONFIRMED_PATH}
     command: npm run serve -- --port ${FRONTEND_PORT}

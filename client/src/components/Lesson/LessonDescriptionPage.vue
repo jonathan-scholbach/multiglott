@@ -20,10 +20,14 @@
                 </router-link>
             </div>   
         </div>
-        <markdown-div 
-            v-if="this.lesson"
-            v-bind:rawMarkdown=lesson.description>
-        </markdown-div>
+        <div class="material-card">
+            <div class="material-card-content">
+                <markdown-div 
+                    v-if="this.lesson"
+                    v-bind:rawMarkdown=lesson.description>
+                </markdown-div>
+            </div>
+        </div> 
     </div>
 </template>
 

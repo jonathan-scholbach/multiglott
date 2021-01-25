@@ -2,8 +2,10 @@ from typing import List
 from logging import getLogger
 
 from fastapi import APIRouter, Depends, HTTPException
+from starlette.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
+from config import config
 from db.database import get_db
 from db.models import User
 from schemas import UserBase, UserSchema, UserWithPassword, UserWithAuthToken
@@ -49,12 +51,16 @@ def delete_user(id: int, db: Session = Depends(get_db)):
 def confirm_user(token: str, db: Session = Depends(get_db)):
     email = User.verification_token(token=token)
     db_user = User.get(db=db, value=email, key="email")
+    print(config["FRONTEND_URL"] + config["FRONTEND_CONFIRMED_PATH"])
     if db_user:
         db_user.verified = True
         db.add(db_user)
         db.commit()
+        print("successfully confirmed")
+        return RedirectResponse(
+            url=config["FRONTEND_URL"] + config["FRONTEND_CONFIRMED_PATH"]
+        )
 
-        return db_user
     else:
         raise HTTPException(
             status_code=422, detail="cannot find user with this token."

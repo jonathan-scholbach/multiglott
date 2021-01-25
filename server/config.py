@@ -19,5 +19,9 @@ config.update(
         "API_URL": f"{os.environ['API_DOMAIN']}:{os.environ['API_PORT']}",
         "APP_NAME": os.environ["APP_NAME"],
         "SMTP_PASSWORD": os.environ["SMTP_PASSWORD"],
+        "FRONTEND_DOMAIN": os.environ["FRONTEND_DOMAIN"],
+        "FRONTEND_PORT": os.environ["FRONTEND_PORT"],
+        "FRONTEND_URL": f"{os.environ['FRONTEND_DOMAIN']}:{os.environ['FRONTEND_PORT']}/#",
+        "FRONTEND_CONFIRMED_PATH": os.environ["FRONTEND_CONFIRMED_PATH"]
     }
 )

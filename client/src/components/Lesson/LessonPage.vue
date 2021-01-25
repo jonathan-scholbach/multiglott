@@ -9,7 +9,7 @@
             </accomplishment-badge>
             
             <div class="material-card-content title-card">
-                <span class="title">{{ lesson.title }}</span>
+                Practice: <span class="title">{{ lesson.title }}</span>
             </div>
             
             <div class="material-card-right">

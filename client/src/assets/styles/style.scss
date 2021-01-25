@@ -4,8 +4,10 @@ $base-size: 20px;
 $theme-color: #ee4488;
 $theme-secondary-color:#7bdd55;
 $theme-tertiary-color:  #007bff;
+$theme-quartary-color: #dd5500;
+
 $theme-background-color: #fff;
-$theme-disabled-color: #999;
+$theme-disabled-color: #666;
 
 $theme-success-color: $theme-color;
 $theme-danger-color: #ff0000;
@@ -204,4 +206,20 @@ li.nav-item:last-child {
     button:not(:first-child) {
         margin-left: $base-size
     }
+}
+
+.highlight1 {
+    color: $theme-color;
+}
+
+.highlight2 {
+    color: $theme-secondary-color;
+}
+
+.highlight3 {
+    color: $theme-tertiary-color;
+}
+
+.highlight4 {
+    color: $theme-quartary-color;
 }

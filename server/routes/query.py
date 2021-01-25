@@ -57,7 +57,7 @@ def find_entity(
         ]
     }
     serialized_entity.update(privileges)
-
+    db.close()
     return serialized_entity
 
 

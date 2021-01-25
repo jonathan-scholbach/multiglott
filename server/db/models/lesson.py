@@ -76,12 +76,9 @@ class Lesson(DBModel, Base, AccessConstricted):
         db.commit()
         db.refresh(db_lesson)
 
-        return db_lesson
+        return db_lesson    
 
     def access_privileges(
         self, db: Session, user: Optional["User"] = None
     ) -> List["Privilege"]:
-        if not user:
-            return []
-
         return self.course.access_privileges(db=db, user=user)

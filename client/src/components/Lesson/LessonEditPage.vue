@@ -59,7 +59,7 @@
                     </div>
                 </form>
                 
-                <div v-html="compiledDescription"></div>
+                <markdown-div v-bind:rawMarkdown=this.description></markdown-div>
             </div>
             
         </div>
@@ -76,6 +76,7 @@ import { findApiModel, updateInstanceByData } from '../../models/ApiModel'
 import Lesson from "../../models/Lesson"
 import { Vocab } from "../../models/Vocab"
 import VocabEditForm from "./VocabEditForm.vue"
+import MarkdownDiv from '../MarkdownDiv.vue'
 
 
 export default {
@@ -115,12 +116,10 @@ export default {
         lessonId: function() {
             return this.$route.params.id
         },
-        compiledDescription: function () {
-            return marked(this.description)
-        },
     },
     components: {
         VocabEditForm,
+        MarkdownDiv
         },
     created: async function() {
         await this.getLesson()

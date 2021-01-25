@@ -34,6 +34,7 @@ import LoginPage from "./components/Auth/LoginPage.vue"
 import ProfilePage from "./components/Pages/ProfilePage.vue"
 import RegisterPage from "./components/Auth/RegisterPage.vue"
 import SuccessfullyRegisteredPage from "./components/Auth/SuccessfullyRegisteredPage.vue"
+import SuccessfullyConfirmedPage from "./components/Auth/SuccessfullyConfirmedPage"
 
 
 const routes = [
@@ -41,6 +42,11 @@ const routes = [
     path: "/",
     name: "home",
     component: HomePage,
+  },
+  {
+    path: process.env.VUE_APP_FRONTEND_CONFIRMED_PATH,
+    name: "confirmed",
+    component: SuccessfullyConfirmedPage,
   },
   {
     path: "/login", 
@@ -98,6 +104,8 @@ const router = new VueRouter({
   routes: routes
 })
 
+router.mode = 'html5'
+
 export default {
   name: "App",
   router: router,
@@ -115,6 +123,8 @@ export default {
   computed: {
     "currentPage": function() {
       switch(this.$route.name) {
+        case "confirmed":
+          return SuccessfullyConfirmedPage
         case "login":
           return LoginPage
         case "register":

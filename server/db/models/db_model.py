@@ -32,7 +32,9 @@ class DBModel:
         value: Any,
         key: str = "id",
     ) -> Optional[Class]:
-        return db.query(cls).filter(getattr(cls, key) == value).first()
+        result = db.query(cls).filter(getattr(cls, key) == value).first()
+        
+        return result
 
     @classmethod
     def fetch(

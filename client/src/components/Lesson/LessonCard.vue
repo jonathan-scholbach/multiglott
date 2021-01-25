@@ -5,7 +5,7 @@
             class="material-card row"
         >
             <accomplishment-badge 
-                v-if="this.lesson.accomplishment !== undefined"
+                v-if="this.loggedIn"
                 v-bind:accomplishment="this.accomplishment"
                 class="material-card-badge"
             ></accomplishment-badge>
@@ -59,20 +59,13 @@ export default {
     },
     methods: {
         getLesson: async function() {
-            try{
-                this.lesson = await findApiModel(
-                    this.$http, Lesson, "slug",  this.slug, ["course"]
-                )
-            } catch (error) {
-                console.log(error)
-            }
-            try {
+            this.lesson = await findApiModel(
+                this.$http, Lesson, "slug",  this.slug, ["course"]
+            )
+            if (this.loggedIn){
                 this.lesson.accomplishment = await this.lesson.getAccomplishment(
                     this.$http
                 )
-            } catch(error) {
-                console.log("getAccomplishment Error")
-                console.log(error)
             }
         },
         getCourse: async function() {
@@ -89,15 +82,24 @@ export default {
         await this.getCourse()
     },
     computed: {
+        loggedIn: function() {
+            console.log(this.$store)
+            return this.$store.getters.loggedIn
+        },
         accomplishment: function () {
             if (this.lesson) {
+                if (this.lesson.accomplishment === 0){
+                    return 0
+                }
                 if (this.lesson.accomplishment) {
                     return this.lesson.accomplishment
                 }
+                
             }
-            return 0
+            
         },
         canRead: function() {
+            console.log("lesson ", this.lesson)
             if (this.lesson) {
                 return this.lesson.privileges.includes(
                     this.$privileges.CAN_READ
