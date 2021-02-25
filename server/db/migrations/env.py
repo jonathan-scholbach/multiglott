@@ -11,7 +11,7 @@ import sys
 from os.path import abspath, dirname
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
-from db.database import Base, SQLALCHEMY_DATABASE_URL
+from db.database import Base, DATABASE_URL
 
 # models must be imported for alembic to detect them:
 
@@ -26,7 +26,7 @@ from db.models.vocab import Vocab
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option('sqlalchemy.url', SQLALCHEMY_DATABASE_URL)
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -57,7 +57,7 @@ def run_migrations_offline():
 
     """
     context.configure(
-        url=SQLALCHEMY_DATABASE_URL,
+        url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},

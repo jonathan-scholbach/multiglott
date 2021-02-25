@@ -13,13 +13,15 @@ from server.config import config
 
 Base = declarative_base()
 
+if "DATABASE_URL" in config:
+    DATABASE_URL = config["DATABASE_URL"]
+else:
+    DATABASE_URL = (
+        f"postgresql://{config['POSTGRES_USER']}:{config['POSTGRES_PASSWORD']}"
+        f"@{config['POSTGRES_HOST']}:{config['POSTGRES_PORT']}/{config['POSTGRES_DB']}"
+    )
 
-SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://{config['POSTGRES_USER']}:{config['POSTGRES_PASSWORD']}"
-    f"@{config['POSTGRES_HOST']}:{config['POSTGRES_PORT']}/{config['POSTGRES_DB']}"
-)
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

@@ -25,3 +25,6 @@ config.update(
         "FRONTEND_CONFIRMED_PATH": os.environ["FRONTEND_CONFIRMED_PATH"]
     }
 )
+
+if os.environ["DATABASE_URL"]:
+    config["DATABASE_URL"] = os.environ["DATABASE_URL"]
