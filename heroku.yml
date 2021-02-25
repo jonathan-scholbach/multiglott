@@ -4,9 +4,9 @@ setup:
       as: db
 build:
   docker:
-    api: server/Dockerfile.server
+    web: server/Dockerfile.server
     client: client/Dockerfile.client
   
 run:
-  api: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  web: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
   client: npm run serve -- --port 80
