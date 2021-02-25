@@ -28,3 +28,6 @@ config.update(
 
 if os.environ["DATABASE_URL"]:
     config["DATABASE_URL"] = os.environ["DATABASE_URL"]
+
+if os.environ["PORT"]:
+    config["API_PORT"] = os.environ["PORT"]
