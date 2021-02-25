@@ -6,8 +6,7 @@ build:
   docker:
     api: server/Dockerfile.server
     client: client/Dockerfile.client
-  config:
   
 run:
   api: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  client: npm run serve -- --port ${FRONTEND_PORT}
+  client: npm run serve -- --port 80
