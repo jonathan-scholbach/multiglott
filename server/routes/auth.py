@@ -11,7 +11,7 @@ from schemas.auth import Token
 auth_routes = APIRouter(
     prefix="/auth",
 )
-
+    
 
 @auth_routes.post("/token", response_model=Token)
 def login(
