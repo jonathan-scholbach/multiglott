@@ -1,4 +1,4 @@
-__multiglott__ is a web application for a custom vocabulary trainer. 
+__multiglott__ is a web application for a custom vocabulary trainer. I have written it as a training-project and still work on it as a means of recreational programming. It is basically taking [jargon](https://github.com/jonathan-scholbach/jargon) to the web.
 
 In order to install your own __multiglott__ application, rename the `.env-example` to `.env`:
 
