@@ -1,4 +1,4 @@
-__multiglott__ is a web application for a community driven vocabulary trainer. 
+__multiglott__ is a web application for a custom vocabulary trainer. 
 
 In order to install your own __multiglott__ application, rename the `.env-example` to `.env`:
 
