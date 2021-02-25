@@ -8,5 +8,5 @@ build:
     client: client/Dockerfile.client
   
 run:
-  web: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  client: npm run serve -- --port 80
+  web: uvicorn main:app --host 0.0.0.0 --reload
+  client: npm run serve
